@@ -1,5 +1,7 @@
 node_modules
 build
-.history
-.eslint*
 .git*
+Dockerfile
+.dockerignore
+yarn-error.log
+.eslint*
