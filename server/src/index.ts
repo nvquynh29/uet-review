@@ -3,6 +3,7 @@ import mongoose from 'mongoose'
 import dotenv from 'dotenv'
 import bodyParser from 'body-parser'
 import cors from 'cors'
+import helmet from 'helmet'
 
 dotenv.config()
 
@@ -11,14 +12,21 @@ const DATABASE_URI = process.env.DATABASE_URI
 
 const app: Application = express()
 
-app.get('/', (req: Request, res: Response, next: NextFunction) => {
-  res.send('Welcome to UET-Review')
-})
-
 // middleware
 app.use(bodyParser.json({ limit: '30mb' }))
 app.use(bodyParser.urlencoded({ extended: true, limit: '30mb' }))
 app.use(cors())
+app.use(helmet())
+
+app.get('/', (req: Request, res: Response, next: NextFunction) => {
+  res.send('Welcome to UET-Review')
+})
+
+app.get('/api/healthz', (req: Request, res: Response, next: NextFunction) => {
+  res.send({
+    'status': 'OK',
+  })
+})
 
 // mongoose
 //   .connect(<string>DATABASE_URI, <mongoose.ConnectOptions>{
