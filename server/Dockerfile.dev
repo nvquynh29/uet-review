@@ -15,4 +15,3 @@ COPY . .
 
 CMD ["yarn", "dev"]
 EXPOSE 5500
-

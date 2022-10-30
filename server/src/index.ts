@@ -4,11 +4,11 @@ import dotenv from 'dotenv'
 import bodyParser from 'body-parser'
 import cors from 'cors'
 import helmet from 'helmet'
+import DB_URI from './config/database.config'
 
 dotenv.config()
 
 const PORT = process.env.PORT
-const DATABASE_URI = process.env.DATABASE_URI
 
 const app: Application = express()
 
@@ -28,21 +28,18 @@ app.get('/api/healthz', (req: Request, res: Response, next: NextFunction) => {
   })
 })
 
-// mongoose
-//   .connect(<string>DATABASE_URI, <mongoose.ConnectOptions>{
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-//   })
-//   .then(() => {
-//     console.log('Connected to DB')
-//     app.listen(PORT, () => {
-//       console.log(`Server is running on port ${PORT}`)
-//     })
-//   })
-//   .catch((err) => {
-//     console.error(err)
-//   })
-
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`)
-})
+console.log(`uri => ${DB_URI}` )
+mongoose
+  .connect(<string>DB_URI, <mongoose.ConnectOptions>{
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => {
+    console.log('Connected to DB')
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`)
+    })
+  })
+  .catch((err) => {
+    console.error(err)
+  })
