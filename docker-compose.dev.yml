@@ -10,7 +10,7 @@ services:
       - 3000:3000
     volumes:
       - ./client:/app
-      - /app/node_modules
+    env_file: ./client/.env
   api:
     depends_on:
       - mongodb
@@ -21,7 +21,7 @@ services:
       - 5500:5500
     volumes:
       - ./server:/app
-      - /app/node_modules
+    env_file: ./server/.env
   mongodb:
     image: mongo
     restart: unless-stopped
