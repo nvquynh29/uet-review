@@ -48,19 +48,14 @@ jobs:
 workflows:
   my-pipeline:
     jobs:
-      - build_frontend:
-          filters:
-            branches:
-              only:
-                - master
-                - develop
-      - build_backend:
-          filters:
-            branches:
-              only:
-                - master
-                - develop
+      - build_frontend
+      - build_backend
       - deploy:
+          filters:
+            branches:
+              only:
+                - master
+                - develop
           requires:
             - build_frontend
             - build_backend

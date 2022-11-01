@@ -5,6 +5,7 @@ import bodyParser from 'body-parser'
 import cors from 'cors'
 import helmet from 'helmet'
 import DB_URI from './config/database.config'
+import User, { IUser } from './api/v1/models/user.model'
 
 dotenv.config()
 
@@ -24,16 +25,30 @@ app.get('/', (req: Request, res: Response, next: NextFunction) => {
 
 app.get('/api/healthz', (req: Request, res: Response, next: NextFunction) => {
   res.send({
-    'status': 'OK',
+    status: 'OK',
   })
 })
 
-console.log(`uri => ${DB_URI}` )
+app.get('/api/test', async (req: Request, res: Response) => {
+  const data: IUser = {
+    nickname: 'Nguyen Van A',
+    email: 'test@gmail.com',
+    password: '123456',
+    role_id: new mongoose.Types.ObjectId(),
+    is_banned: false,
+  }
+  const user = await User.create(data)
+  return res.json({ user })
+})
+
 mongoose
-  .connect(<string>DB_URI, <mongoose.ConnectOptions>{
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(
+    <string>DB_URI,
+    <mongoose.ConnectOptions>{
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    }
+  )
   .then(() => {
     console.log('Connected to DB')
     app.listen(PORT, () => {
