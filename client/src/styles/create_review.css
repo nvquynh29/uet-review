@@ -46,9 +46,8 @@
 }
 
 .post-label {
-  /* width: 100%; */
   max-width: 400px;
-  min-width: 200px;
+  /* min-width: 200px; */
   margin-bottom: 10px;
   padding: 5px;
   border: solid 1px;
