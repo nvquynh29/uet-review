@@ -1,17 +1,25 @@
-import * as React from 'react';
-import "./styles.css";
+import React from 'react'
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 
-interface IAppProps {
+import PageRender from './PageRender'
+import Header from './components/global/Header'
+
+
+const App = () => {
+  return (
+    <div className="container">
+      <Router>
+        <Header />
+
+        <Switch>
+          <Route exact path="/" component={PageRender} />
+          <Route exact path="/:page" component={PageRender} />
+          <Route exact path="/:page/:slug" component={PageRender} />
+        </Switch>
+
+      </Router>
+    </div>
+  )
 }
 
-const App: React.FunctionComponent<IAppProps> = (props) => {
-  return (
-    <div className="App">
-      <div className="container">
-        <div className="title">Welcome to UET Review</div>
-      </div>
-    </div>
-  );
-};
-
-export default App;
+export default App
