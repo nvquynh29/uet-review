@@ -14,7 +14,7 @@ jobs:
       - checkout
       - run:
           name: Build docker image
-          command: cd ~/uet-review/client && docker build -t $DOCKER_IMAGE:$DOCKER_TAG .
+          command: cd ~/uet-review/client && docker build -f Dockerfile.dev -t $DOCKER_IMAGE:$DOCKER_TAG .
       - run:
           name: Push image to docker hub
           command: |
