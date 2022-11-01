@@ -1,27 +1,22 @@
 import mongoose, { Schema, Types } from 'mongoose'
 
-interface IReview {
+export interface IReview {
   _id: Types.ObjectId
   name: string
   content: string
 }
 
-interface ITag {
-  _id: Types.ObjectId
-  name: string
-}
-
-interface IPost {
+export interface IPost {
   author_id: object
   subject_id?: object
   lecturer_id?: object
   title: string
-  slug: string
+  slug?: string
   content: string
   reviews: Types.DocumentArray<IReview>
-  tags?: Types.DocumentArray<ITag>
-  created_at: Date
-  updated_at: Date
+  tags?: Array<string>
+  created_at?: Date
+  updated_at?: Date
 }
 
 const postSchema = new Schema<IPost>(
@@ -33,7 +28,7 @@ const postSchema = new Schema<IPost>(
     slug: { type: String, required: true },
     content: { type: String, required: true },
     reviews: [{ name: String, content: String }],
-    tags: [{ name: String }],
+    tags: [String],
   },
   {
     timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
