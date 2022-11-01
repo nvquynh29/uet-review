@@ -5,7 +5,7 @@ import bodyParser from 'body-parser'
 import cors from 'cors'
 import helmet from 'helmet'
 import DB_URI from './config/database.config'
-import User, { IUser } from './api/v1/models/user.model'
+import routes from './api/v1/routes'
 
 dotenv.config()
 
@@ -19,26 +19,10 @@ app.use(bodyParser.urlencoded({ extended: true, limit: '30mb' }))
 app.use(cors())
 app.use(helmet())
 
+// routes
+app.use(routes)
 app.get('/', (req: Request, res: Response, next: NextFunction) => {
   res.send('Welcome to UET-Review')
-})
-
-app.get('/api/healthz', (req: Request, res: Response, next: NextFunction) => {
-  res.send({
-    status: 'OK',
-  })
-})
-
-app.get('/api/test', async (req: Request, res: Response) => {
-  const data: IUser = {
-    nickname: 'Nguyen Van A',
-    email: 'test@gmail.com',
-    password: '123456',
-    role_id: new mongoose.Types.ObjectId(),
-    is_banned: false,
-  }
-  const user = await User.create(data)
-  return res.json({ user })
 })
 
 mongoose
