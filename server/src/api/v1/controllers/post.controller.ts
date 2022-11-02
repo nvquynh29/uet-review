@@ -6,22 +6,29 @@ import { generateSlug } from '../../../pkg/slugify'
 const createPost = async (req: Request, res: Response) => {
   const body = req.body
   const post: IPost = {
-    author_id: new Types.ObjectId(body.author_id),
-    subject_id: new Types.ObjectId(body.subject_id),
-    lecturer_id: new Types.ObjectId(),
+    author_id: new Types.ObjectId(body.user),
+    subject_id: undefined,
+    lecturer_id: new Types.ObjectId(body.lecturer),
     title: body.title,
     content: body.content,
     reviews: new Types.DocumentArray<IReview>([]),
     tags: [],
   }
 
+  if (body.subject != '') {
+    post.subject_id = new Types.ObjectId(body.subject)
+  }
+  if (body.lecturer != '') {
+    post.lecturer_id = new Types.ObjectId(body.lecturer)
+  }
+
   body.reviews.forEach(function (review: IReview) {
     post.reviews.push(review)
   })
 
-  body.tags.forEach(function (tag: string) {
-    post.tags?.push(tag)
-  })
+  // body.tags.forEach(function (tag: string) {
+  //   post.tags?.push(tag)
+  // })
 
   post.slug = generateSlug(post.title)
   const newPost = await Post.create(post)
@@ -39,7 +46,7 @@ const getPost = async (req: Request, res: Response) => {
     nickname: 'Trịnh Mai Huy',
     email: 'trinh.mai.huy@gmail.com',
   }
-  return res.json({ post, author })
+  return res.json({ data: { post, author } })
 }
 
 const getListPost = async (req: Request, res: Response) => {
@@ -49,10 +56,10 @@ const getListPost = async (req: Request, res: Response) => {
     nickname: 'Trịnh Mai Huy',
     email: 'trinh.mai.huy@gmail.com',
   }
-  posts.forEach(post => {
+  posts.forEach((post) => {
     data.push({
       post,
-      author
+      author,
     })
   })
 

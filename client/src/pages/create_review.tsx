@@ -1,79 +1,147 @@
 import React, { useState } from "react";
+import { createPost } from '../api/post';
 import { InputChange } from "../utils/TypeScript";
+
+export const lecturers = [
+  {
+    id: "636125870f506d29b2baf95b",
+    name: "Nguyễn Văn A"
+  },
+  {
+    id: "636125870f506d29b2bafaaa",
+    name: "Nguyễn Văn B"
+  },
+]
+
+export const subjects = [
+  {
+    id: "636125870f506d29b2baf94a",
+    name: "Giải tích 1"
+  },
+  {
+    id: "636125870f506d29b2bafccc",
+    name: "Giải tích 2"
+  },
+]
+
+const lecturerReviews = [
+  'Mức độ nghiêm khắc',
+  'Mức độ hiểu bài',
+  'Điểm số',
+  'Tương tác với sinh viên',
+  'Môn học đề xuất',
+]
+
+const subjectReviews = [
+  'Nội dung môn học',
+  'Cách thức tính điểm',
+  'Hình thức thi giữa kỳ',
+  'Hình thức thi cuối kỳ',
+  'Giảng viên đề xuất',
+]
 
 const CreateReview = () => {
   const initState = {
-    user: "",
+    user: "636183710f506d29b2baf95b",
     title: "",
     content: "",
-    reviews: ["", "", "", "", ""],
+    reviews: [{ name: '', content: '' }, { name: '', content: '' }, { name: '', content: '' }, { name: '', content: '' }, { name: '', content: '' }],
     subject: "",
     lecturer: "",
     createdAt: new Date().toISOString(),
   };
 
-  const [review, setReview] = useState(initState);
+  const [post, setPost] = useState(initState);
   const [selected, setSelected] = useState("lecturer");
 
   const isSelected = (value: string): boolean => selected === value;
 
   const handleChangeRadio = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSelected(e.currentTarget.value);
+    const selectedReview = e.currentTarget.value
+    setSelected(selectedReview);
+    
+    setPost(prev => { 
+        prev.reviews.map((element, idx) => selectedReview === 'lecturer' 
+        ? element.name = lecturerReviews[idx] 
+        : element.name = subjectReviews[idx])
+        return prev
+       })
   };
 
   const handleChangeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { value, name } = e.target;
-    setReview({ ...review, [name]: value });
+    setPost({ ...post, [name]: value });
   };
 
   const review1 = (e: InputChange) => {
     const { value, name } = e.target;
-    let newReviews = review.reviews;
-    newReviews[0] = value;
-    setReview({ ...review, [name]: newReviews });
+    const newReviews = post.reviews;
+    newReviews[0].content = value;
+    newReviews[0].name = name;
+    setPost({ ...post, ...{ reviews: newReviews }});
   };
 
   const review2 = (e: InputChange) => {
     const { value, name } = e.target;
-    let newReviews = review.reviews;
-    newReviews[1] = value;
-    setReview({ ...review, [name]: newReviews });
+    const newReviews = post.reviews;
+    newReviews[1].content = value;
+    newReviews[1].name = name;
+    setPost({ ...post, ...{ reviews: newReviews }});
   };
 
   const review3 = (e: InputChange) => {
     const { value, name } = e.target;
-    let newReviews = review.reviews;
-    newReviews[2] = value;
-    setReview({ ...review, [name]: newReviews });
+    const newReviews = post.reviews;
+    newReviews[2].content = value;
+    newReviews[2].name = name;
+    setPost({ ...post, ...{ reviews: newReviews }});
   };
 
   const review4 = (e: InputChange) => {
     const { value, name } = e.target;
-    let newReviews = review.reviews;
-    newReviews[3] = value;
-    setReview({ ...review, [name]: newReviews });
+    const newReviews = post.reviews;
+    newReviews[3].content = value;
+    newReviews[3].name = name;
+    setPost({ ...post, ...{ reviews: newReviews }});
   };
 
   const review5 = (e: InputChange) => {
     const { value, name } = e.target;
-    let newReviews = review.reviews;
-    newReviews[4] = value;
-    setReview({ ...review, [name]: newReviews });
+    const newReviews = post.reviews;
+    newReviews[4].content = value;
+    newReviews[4].name = name;
+    setPost({ ...post, ...{ reviews: newReviews }});
   };
 
   const handleChangeTextArea = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { value, name } = e.target;
-    setReview({ ...review, [name]: value });
+    setPost({ ...post, [name]: value });
   };
 
   const handleChangeInput = (e: InputChange) => {
     const { value, name } = e.target;
-    setReview({ ...review, [name]: value });
+    setPost({ ...post, [name]: value });
   };
 
   const handleSubmit = async () => {
-    console.log(review);
+    const data = { ...post }
+    if (selected === 'lecturer') {
+      data.subject = ''
+    } else {
+      data.lecturer = ''
+    }
+    console.log(data)
+    onCreatePost(data)
   };
+
+  const onCreatePost = async (post: object) => {
+    try {
+      const { data } = await createPost(post)
+      console.log(data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   return (
     <div className="my-4 create_review">
@@ -84,7 +152,7 @@ const CreateReview = () => {
         <input
           type="text"
           className="form-control"
-          value={review.title}
+          value={post.title}
           name="title"
           onChange={handleChangeInput}
         />
@@ -117,24 +185,22 @@ const CreateReview = () => {
             {selected === "lecturer" ? (
               <select
                 className="form-control text-capitalize"
-                value={review.lecturer}
+                value={post.lecturer}
                 name="lecturer"
                 onChange={handleChangeSelect}
               >
-                <option value="">Chọn giảng viên</option>
-                <option value="Nguyễn Văn A">Nguyễn Văn A</option>
-                <option value="Nguyễn Văn B">Nguyễn Văn B</option>
+                <option>Chọn giảng viên</option>
+                {lecturers.map(lecturer => <option key={lecturer.id} value={lecturer.id}>{lecturer.name}</option>)}
               </select>
             ) : (
               <select
                 className="form-control text-capitalize"
-                value={review.subject}
+                value={post.subject}
                 name="subject"
                 onChange={handleChangeSelect}
               >
-                <option value="">Chọn môn học</option>
-                <option value="Giải tích 1">Giải tích 1</option>
-                <option value="Giải tích 2">Giải tích 2</option>
+                <option>Chọn môn học</option>
+                {subjects.map(subject => <option key={subject.id} value={subject.id}>{subject.name}</option>)}
               </select>
             )}
           </div>
@@ -158,8 +224,10 @@ const CreateReview = () => {
             type="text"
             className="form-control"
             id="review0"
-            name="reviews"
-            value={review.reviews[0]}
+            name={selected === "lecturer"
+              ? "Mức độ nghiêm khắc"
+              : "Nội dung môn học"}
+            value={post.reviews[0].content}
             onChange={review1}
           />
         </div>
@@ -178,8 +246,10 @@ const CreateReview = () => {
             type="text"
             className="form-control"
             id="review1"
-            name="reviews"
-            value={review.reviews[1]}
+            name={selected === "lecturer"
+              ? "Mức độ hiểu bài"
+              : "Cách thức tính điểm"}
+            value={post.reviews[1].content}
             onChange={review2}
           />
         </div>
@@ -196,8 +266,8 @@ const CreateReview = () => {
             type="text"
             className="form-control"
             id="review2"
-            name="reviews"
-            value={review.reviews[2]}
+            name={selected === "lecturer" ? "Điểm số" : "Hình thức thi giữa kỳ"}
+            value={post.reviews[2].content}
             onChange={review3}
           />
         </div>
@@ -216,8 +286,10 @@ const CreateReview = () => {
             type="text"
             className="form-control"
             id="review3"
-            name="reviews"
-            value={review.reviews[3]}
+            name={selected === "lecturer"
+              ? "Tương tác với sinh viên"
+              : "Hình thức thi cuối kỳ"}
+            value={post.reviews[3].content}
             onChange={review4}
           />
         </div>
@@ -234,8 +306,8 @@ const CreateReview = () => {
             type="text"
             className="form-control"
             id="review4"
-            name="reviews"
-            value={review.reviews[4]}
+            name={selected === "lecturer" ? "Môn học đề xuất" : "Giảng viên đề xuất"}
+            value={post.reviews[4].content}
             onChange={review5}
           />
         </div>
@@ -250,7 +322,7 @@ const CreateReview = () => {
             className="form-control"
             id="content"
             name="content"
-            value={review.content}
+            value={post.content}
             rows={10}
             onChange={handleChangeTextArea}
           ></textarea>
