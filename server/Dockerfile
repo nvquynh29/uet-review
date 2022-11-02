@@ -12,4 +12,5 @@ WORKDIR /app
 
 RUN yarn global add typescript
 RUN yarn
-CMD ["sh", "-c", "yarn production"]
+CMD ["sh", "-c", "yarn dev"]
+EXPOSE 5500
