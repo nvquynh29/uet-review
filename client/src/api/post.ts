@@ -10,4 +10,9 @@ const getPostBySlug = async (slug: string) => {
   return data
 }
 
-export { createPost, getPostBySlug }
+const getListPost = async () => {
+  const { data } = await instance.get('/posts')
+  return data
+}
+
+export { createPost, getPostBySlug, getListPost }

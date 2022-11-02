@@ -63,7 +63,7 @@ const getListPost = async (req: Request, res: Response) => {
     })
   })
 
-  return res.json(data)
+  return res.json({ data })
 }
 
 export { createPost, getPost, getListPost }
