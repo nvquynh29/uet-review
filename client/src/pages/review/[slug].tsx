@@ -1,35 +1,81 @@
-import React from "react";
-// import { useParams } from 'react-router-dom'
+import React, { useEffect, useCallback, useState } from "react";
+import { useParams } from 'react-router-dom'
 
-// import { IParams } from '../../utils/TypeScript'
+import { IParams } from '../../utils/TypeScript'
 import avatar from "../../images/avatar.png";
 import Comment from "../../components/review/Comment";
+import { getPostBySlug } from '../../api/post';
+import { lecturers, subjects } from '../create_review';
+
+export interface Author {
+    nickname: string;
+    email:    string;
+}
+
+export interface Post {
+    _id:         string;
+    author_id:   string;
+    lecturer_id?: string;
+    subject_id?: string;
+    title:       string;
+    slug:        string;
+    content:     string;
+    reviews:     Review[];
+    tags:        any[];
+    created_at:  string;
+    updated_at:  string;
+}
+
+export interface Review {
+    name:    string;
+    content: string;
+    _id:     string;
+}
+
 
 const DetailReview = () => {
-  // const id = useParams<IParams>().slug
+  const slug = useParams<IParams>().slug
+  const [postData, setPostData] = useState<{post: Post, author: Author}>()
+  useEffect(() => {
+    fetchPost()
+  }, [])
+  
+  const fetchPost = useCallback(
+    async () => {
+      try {
+        const { data } = await getPostBySlug(slug)
+        console.log(data)
+        setPostData(data)
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    [],
+  )
+  
 
-  let selected = "lecturer";
+  const selected = postData?.post.lecturer_id ? "lecturer" : "subject";
 
   return (
     <div className="my-4 detail_review">
       <div className="row mt-4 align-items-center postInfo">
         <div className="col-7">
-          <h2>Review by Trinh Mai Huy</h2>
+          <h2>Review by {postData?.author.nickname}</h2>
         </div>
         <div className="col-2 d-flex justify-content-end align-self-center">
           <img src={avatar} alt="avatar" className="avatar"></img>
           <p className="date" style={{ margin: "auto" }}>
-            01/11/2022
+            {new Date().toLocaleDateString('vi')}
           </p>
         </div>
         <div className="col-3 reactionContainer">
           <button className="reactionButton" id="likeButton">
             <i className="bi bi-hand-thumbs-up"></i>
-            <span>1.2k</span>
+            <span>0</span>
           </button>
           <button className="reactionButton" id="dislikeButton">
             <i className="bi bi-hand-thumbs-down"></i>
-            <span>1.2k</span>
+            <span>0</span>
           </button>
         </div>
       </div>
@@ -39,85 +85,29 @@ const DetailReview = () => {
           <p className="post-label reviewObject">Đối tượng Review</p>
         </div>
         <div className="col-md-4">
-          <p className="labelContent reviewObject">Thầy Nguyễn Văn A</p>
+          <p className="labelContent reviewObject">{ selected == 'lecturer' 
+          ? lecturers.find(item => item.id === postData?.post?.lecturer_id)?.name 
+          : subjects.find(item => item.id === postData?.post?.subject_id)?.name }</p>
         </div>
       </div>
 
-      <div className="row mt-4">
+      {postData?.post.reviews.map(item => (
+        <div key={item._id} className="row mt-4">
         <div className="col-4">
           <p className="post-label">
-            {selected === "lecturer"
-              ? "Mức độ nghiêm khắc"
-              : "Nội dung môn học"}
-          </p>
-        </div>
-        <div className="col-8">
-          <p className="labelContent" id="review0">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum
-            in neque ipsum.
-          </p>
-        </div>
-      </div>
-
-      <div className="row mt-4">
-        <div className="col-4">
-          <p className="post-label">
-            {selected === "lecturer"
-              ? "Mức độ hiểu bài"
-              : "Cách thức tính điểm"}
-          </p>
-        </div>
-        <div className="col-8">
-          <p className="labelContent" id="review1">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum
-            in neque ipsum.
-          </p>
-        </div>
-      </div>
-
-      <div className="row mt-4">
-        <div className="col-4">
-          <p className="post-label">
-            {selected === "lecturer" ? "Điểm số" : "Hình thức thi giữa kỳ"}
-          </p>
-        </div>
-        <div className="col-8">
-          <p className="labelContent" id="review2">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum
-            in neque ipsum.
-          </p>
-        </div>
-      </div>
-
-      <div className="row mt-4">
-        <div className="col-4">
-          <p className="post-label">
-            {selected === "lecturer"
-              ? "Tương tác với sinh viên"
-              : "Hình thức thi cuối kỳ"}
+            {item.name}
           </p>
         </div>
         <div className="col-8">
           <p className="labelContent" id="review3">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum
-            in neque ipsum.
+            {item.content}
           </p>
         </div>
       </div>
+      ))}
+      
 
       <div className="row mt-4">
-        <div className="col-4">
-          <p className="post-label">
-            {selected === "lecturer" ? "Môn học đề xuất" : "Giảng viên đề xuất"}
-          </p>
-        </div>
-        <div className="col-8">
-          <p className="labelContent" id="review4">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum
-            in neque ipsum.
-          </p>
-        </div>
-
         <div className="row mt-4">
           <div className="form-group">
             <p className="post-label" style={{ width: "13rem" }}>
@@ -125,17 +115,7 @@ const DetailReview = () => {
             </p>
 
             <p className="mainContent">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Vestibulum in neque ipsum. Nulla elementum nunc vel tellus
-              porttitor maximus. Aenean sed pulvinar elit, nec porta ligula. Sed
-              ac iaculis tellus. Nam odio sapien, porta ut rutrum ut,
-              pellentesque non eros. Donec varius nibh nec gravida finibus. Sed
-              dapibus felis dolor, at aliquam diam rutrum in. Donec sed cursus
-              arcu. Sed pellentesque tellus vel lectus elementum, ut mattis enim
-              consequat. Maecenas ultricies venenatis tellus eget congue. Ut id
-              sagittis tortor. Mauris eget iaculis ligula. Mauris eleifend
-              ornare augue eget pellentesque. Maecenas libero nibh, tempus nec
-              elementum at, ultricies nec augue.
+              {postData?.post.content}
             </p>
           </div>
         </div>
