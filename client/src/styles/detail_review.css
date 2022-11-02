@@ -76,3 +76,21 @@
   border: 1px solid;
   border-radius: 20px;
 }
+
+/* List post */
+.list-post {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.list-post .card {
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.list-post .card a {
+  font-size: 24px;
+  cursor: pointer;
+}
