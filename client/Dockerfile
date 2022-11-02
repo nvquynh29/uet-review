@@ -8,7 +8,7 @@ COPY . /app
 
 WORKDIR /app
 
-RUN yarn global add typescript && yarn && yarn build
+RUN yarn global add typescript && yarn
 
-FROM nginx:latest
-COPY --from=builder /app/build /usr/share/nginx/html
+CMD ["yarn", "start"]
+EXPOSE 3000
