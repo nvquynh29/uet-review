@@ -15,6 +15,8 @@ export interface IPost {
   content: string
   reviews: Types.DocumentArray<IReview>
   tags?: Array<string>
+  likes?: number
+  dislikes?: number
   created_at?: Date
   updated_at?: Date
 }
@@ -29,6 +31,8 @@ const postSchema = new Schema<IPost>(
     content: { type: String, required: true },
     reviews: [{ name: String, content: String }],
     tags: [String],
+    likes: { type: Number, required: true, default: 0 },
+    dislikes: { type: Number, required: true, default: 0 },
   },
   {
     timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
