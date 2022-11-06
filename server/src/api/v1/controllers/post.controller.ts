@@ -1,7 +1,8 @@
-import { Request, Response } from 'express'
-import { Document, Types } from 'mongoose'
+import { NextFunction, Request, Response } from 'express'
+import { Types } from 'mongoose'
 import Post, { IPost, IReview } from '../models/post.model'
 import { generateSlug } from '../../../pkg/slugify'
+import { IPagination } from '../types'
 
 const createPost = async (req: Request, res: Response) => {
   const body = req.body
@@ -49,21 +50,37 @@ const getPost = async (req: Request, res: Response) => {
   return res.json({ data: { post, author } })
 }
 
-const getListPost = async (req: Request, res: Response) => {
-  const posts = await Post.find()
-  const data: any = []
-  const author = {
-    nickname: 'Trịnh Mai Huy',
-    email: 'trinh.mai.huy@gmail.com',
+const getListPost = async (req: Request, res: Response, next: NextFunction) => {
+  const { page, size } = req.query
+  const pagination: IPagination = {
+    page: parseInt(page as string) || 1,
+    size: parseInt(size as string) || 10,
   }
-  posts.forEach((post) => {
-    data.push({
-      post,
-      author,
-    })
-  })
+  const offset = (pagination.page - 1) * pagination.size
 
-  return res.json({ data })
+  try {
+    const posts = await Post.find().sort({ likes: 'desc' }).skip(offset).limit(pagination.size)
+    const total = await Post.find().countDocuments()
+    const totalPage = Math.ceil(total / pagination.size)
+    pagination.total = total
+    pagination.total_page = totalPage
+
+    const data: any = []
+    const author = {
+      nickname: 'Trịnh Mai Huy',
+      email: 'trinh.mai.huy@gmail.com',
+    }
+    posts.forEach((post) => {
+      data.push({
+        post,
+        author,
+      })
+    })
+
+    return res.json({ data, meta: pagination })
+  } catch (error) {
+    res.status(500).json(error)
+  }
 }
 
 export { createPost, getPost, getListPost }
