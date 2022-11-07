@@ -51,6 +51,25 @@ const DetailReview = () => {
 
   const selected = postData?.post.lecturer_id ? "lecturer" : "subject";
 
+  // *handleReaction
+  enum Reaction {
+    Null = -1,
+    Dislike,
+    Like,
+  }
+  const [clientReaction, setClientReaction] = useState(Reaction.Null);
+  const handleReactionButton = (reactionCode: number) => {
+    switch (clientReaction) {
+      case reactionCode:
+        setClientReaction(Reaction.Null);
+        break;
+      default:
+        setClientReaction(reactionCode);
+        break;
+    }
+    console.log(clientReaction === Reaction.Like);
+  };
+
   return (
     <div className="my-4 detail_review">
       <div className="row mt-4 align-items-center postInfo">
@@ -64,13 +83,37 @@ const DetailReview = () => {
           </p>
         </div>
         <div className="col-3 reactionContainer">
-          <button className="reactionButton" id="likeButton">
-            <i className="bi bi-hand-thumbs-up"></i>
-            <span>0</span>
+          <button
+            className="reactionButton"
+            id="likeButton"
+            onClick={() => handleReactionButton(Reaction.Like)}
+          >
+            <i
+              className={
+                "bi " +
+                (clientReaction === Reaction.Like
+                  ? "bi-hand-thumbs-up-fill"
+                  : "bi-hand-thumbs-up")
+              }
+              style={{ color: "#5b8cf7" }}
+            ></i>
+            <span>{clientReaction === Reaction.Like ? 0 + 1 : 0}</span>
           </button>
-          <button className="reactionButton" id="dislikeButton">
-            <i className="bi bi-hand-thumbs-down"></i>
-            <span>0</span>
+          <button
+            className="reactionButton"
+            id="dislikeButton"
+            onClick={() => handleReactionButton(Reaction.Dislike)}
+          >
+            <i
+              className={
+                "bi " +
+                (clientReaction === Reaction.Dislike
+                  ? "bi-hand-thumbs-down-fill"
+                  : "bi-hand-thumbs-down")
+              }
+              style={{ color: "#f10000" }}
+            ></i>
+            <span>{clientReaction === Reaction.Dislike ? 0 + 1 : 0}</span>
           </button>
         </div>
       </div>
@@ -81,7 +124,7 @@ const DetailReview = () => {
         </div>
         <div className="col-md-4">
           <p className="labelContent reviewObject">
-            {selected == "lecturer"
+            {selected === "lecturer"
               ? lecturers.find(
                   (item) => item.id === postData?.post?.lecturer_id
                 )?.name
