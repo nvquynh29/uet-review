@@ -20,6 +20,8 @@ export interface Post {
     title:       string;
     slug:        string;
     content:     string;
+    likes:       number;
+    dislikes:    number;
     reviews:     Review[];
     tags:        any[];
     created_at:  string;

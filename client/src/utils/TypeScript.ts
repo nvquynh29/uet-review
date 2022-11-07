@@ -28,15 +28,3 @@ export interface IUser extends IUserLogin {
     updatedAt: string
     _id: string
 }
-
-export interface IReview {
-    _id?: string
-    user: string | IUser
-    title: string
-    content: string
-    reviews: string[]
-    subject: string
-    lecturer: string
-    tags: string[]
-    createdAt: string
-}
