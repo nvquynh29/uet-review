@@ -1,58 +1,53 @@
 import React, { useEffect, useCallback, useState } from "react";
-import { useParams } from 'react-router-dom'
+import { useParams } from "react-router-dom";
 
-import { IParams } from '../../utils/TypeScript'
+import { IParams } from "../../utils/TypeScript";
 import avatar from "../../images/avatar.png";
 import Comment from "../../components/review/Comment";
-import { getPostBySlug } from '../../api/post';
-import { lecturers, subjects } from '../create_review';
+import { getPostBySlug } from "../../api/post";
+import { lecturers, subjects } from "../create_review";
 
 export interface Author {
-    nickname: string;
-    email:    string;
+  nickname: string;
+  email: string;
 }
 
 export interface Post {
-    _id:         string;
-    author_id:   string;
-    lecturer_id?: string;
-    subject_id?: string;
-    title:       string;
-    slug:        string;
-    content:     string;
-    reviews:     Review[];
-    tags:        any[];
-    created_at:  string;
-    updated_at:  string;
+  _id: string;
+  author_id: string;
+  lecturer_id?: string;
+  subject_id?: string;
+  title: string;
+  slug: string;
+  content: string;
+  reviews: Review[];
+  tags: any[];
+  created_at: string;
+  updated_at: string;
 }
 
 export interface Review {
-    name:    string;
-    content: string;
-    _id:     string;
+  name: string;
+  content: string;
+  _id: string;
 }
 
-
 const DetailReview = () => {
-  const slug = useParams<IParams>().slug
-  const [postData, setPostData] = useState<{post: Post, author: Author}>()
+  const slug = useParams<IParams>().slug;
+  const [postData, setPostData] = useState<{ post: Post; author: Author }>();
   useEffect(() => {
-    fetchPost()
-  }, [])
-  
-  const fetchPost = useCallback(
-    async () => {
-      try {
-        const { data } = await getPostBySlug(slug)
-        console.log(data)
-        setPostData(data)
-      } catch (error) {
-        console.log(error)
-      }
-    },
-    [],
-  )
-  
+    fetchPost();
+  }, []);
+
+  const fetchPost = useCallback(async () => {
+    try {
+      const { data } = await getPostBySlug(slug);
+      console.log(data);
+      setPostData(data);
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
 
   const selected = postData?.post.lecturer_id ? "lecturer" : "subject";
 
@@ -65,7 +60,7 @@ const DetailReview = () => {
         <div className="col-2 d-flex justify-content-end align-self-center">
           <img src={avatar} alt="avatar" className="avatar"></img>
           <p className="date" style={{ margin: "auto" }}>
-            {new Date().toLocaleDateString('vi')}
+            {new Date().toLocaleDateString("vi")}
           </p>
         </div>
         <div className="col-3 reactionContainer">
@@ -85,38 +80,38 @@ const DetailReview = () => {
           <p className="post-label reviewObject">Đối tượng Review</p>
         </div>
         <div className="col-md-4">
-          <p className="labelContent reviewObject">{ selected == 'lecturer' 
-          ? lecturers.find(item => item.id === postData?.post?.lecturer_id)?.name 
-          : subjects.find(item => item.id === postData?.post?.subject_id)?.name }</p>
+          <p className="labelContent reviewObject">
+            {selected == "lecturer"
+              ? lecturers.find(
+                  (item) => item.id === postData?.post?.lecturer_id
+                )?.name
+              : subjects.find((item) => item.id === postData?.post?.subject_id)
+                  ?.name}
+          </p>
         </div>
       </div>
 
-      {postData?.post.reviews.map(item => (
+      {postData?.post.reviews.map((item) => (
         <div key={item._id} className="row mt-4">
-        <div className="col-4">
-          <p className="post-label">
-            {item.name}
-          </p>
+          <div className="col-4">
+            <p className="post-label">{item.name}</p>
+          </div>
+          <div className="col-8">
+            <p className="labelContent" id="review3">
+              {item.content}
+            </p>
+          </div>
         </div>
-        <div className="col-8">
-          <p className="labelContent" id="review3">
-            {item.content}
-          </p>
-        </div>
-      </div>
       ))}
-      
 
       <div className="row mt-4">
         <div className="row mt-4">
           <div className="form-group">
             <p className="post-label" style={{ width: "13rem" }}>
-              Nội dung
+              Đánh giá khác
             </p>
 
-            <p className="mainContent">
-              {postData?.post.content}
-            </p>
+            <p className="mainContent">{postData?.post.content}</p>
           </div>
         </div>
 
