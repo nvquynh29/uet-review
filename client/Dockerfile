@@ -4,11 +4,11 @@ RUN mkdir /app
 
 COPY ./package.json /app
 COPY ./yarn.lock /app
-COPY . /app
 
 WORKDIR /app
 
 RUN yarn global add typescript && yarn
+COPY . .
 
 CMD ["yarn", "start"]
 EXPOSE 3000

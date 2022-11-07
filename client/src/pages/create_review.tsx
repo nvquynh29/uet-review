@@ -1,51 +1,57 @@
 import React, { useState } from "react";
-import { createPost } from '../api/post';
+import { createPost } from "../api/post";
 import { InputChange } from "../utils/TypeScript";
 
 export const lecturers = [
   {
     id: "636125870f506d29b2baf95b",
-    name: "Nguyễn Văn A"
+    name: "Nguyễn Văn A",
   },
   {
     id: "636125870f506d29b2bafaaa",
-    name: "Nguyễn Văn B"
+    name: "Nguyễn Văn B",
   },
-]
+];
 
 export const subjects = [
   {
     id: "636125870f506d29b2baf94a",
-    name: "Giải tích 1"
+    name: "Giải tích 1",
   },
   {
     id: "636125870f506d29b2bafccc",
-    name: "Giải tích 2"
+    name: "Giải tích 2",
   },
-]
+];
 
 const lecturerReviews = [
-  'Mức độ nghiêm khắc',
-  'Mức độ hiểu bài',
-  'Điểm số',
-  'Tương tác với sinh viên',
-  'Môn học đề xuất',
-]
+  "Mức độ nghiêm khắc",
+  "Phương pháp giảng dạy",
+  "Hình thức đánh giá sinh viên",
+  "Tương tác với sinh viên",
+  "Môn học đề xuất",
+];
 
 const subjectReviews = [
-  'Nội dung môn học',
-  'Cách thức tính điểm',
-  'Hình thức thi giữa kỳ',
-  'Hình thức thi cuối kỳ',
-  'Giảng viên đề xuất',
-]
+  "Đánh giá khác môn học",
+  "Cách thức tính điểm",
+  "Hình thức thi giữa kỳ",
+  "Hình thức thi cuối kỳ",
+  "Giảng viên đề xuất",
+];
 
 const CreateReview = () => {
   const initState = {
     user: "636183710f506d29b2baf95b",
     title: "",
     content: "",
-    reviews: [{ name: '', content: '' }, { name: '', content: '' }, { name: '', content: '' }, { name: '', content: '' }, { name: '', content: '' }],
+    reviews: [
+      { name: "", content: "" },
+      { name: "", content: "" },
+      { name: "", content: "" },
+      { name: "", content: "" },
+      { name: "", content: "" },
+    ],
     subject: "",
     lecturer: "",
     createdAt: new Date().toISOString(),
@@ -57,15 +63,17 @@ const CreateReview = () => {
   const isSelected = (value: string): boolean => selected === value;
 
   const handleChangeRadio = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedReview = e.currentTarget.value
+    const selectedReview = e.currentTarget.value;
     setSelected(selectedReview);
-    
-    setPost(prev => { 
-        prev.reviews.map((element, idx) => selectedReview === 'lecturer' 
-        ? element.name = lecturerReviews[idx] 
-        : element.name = subjectReviews[idx])
-        return prev
-       })
+
+    setPost((prev) => {
+      prev.reviews.map((element, idx) =>
+        selectedReview === "lecturer"
+          ? (element.name = lecturerReviews[idx])
+          : (element.name = subjectReviews[idx])
+      );
+      return prev;
+    });
   };
 
   const handleChangeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -78,7 +86,7 @@ const CreateReview = () => {
     const newReviews = post.reviews;
     newReviews[0].content = value;
     newReviews[0].name = name;
-    setPost({ ...post, ...{ reviews: newReviews }});
+    setPost({ ...post, ...{ reviews: newReviews } });
   };
 
   const review2 = (e: InputChange) => {
@@ -86,7 +94,7 @@ const CreateReview = () => {
     const newReviews = post.reviews;
     newReviews[1].content = value;
     newReviews[1].name = name;
-    setPost({ ...post, ...{ reviews: newReviews }});
+    setPost({ ...post, ...{ reviews: newReviews } });
   };
 
   const review3 = (e: InputChange) => {
@@ -94,7 +102,7 @@ const CreateReview = () => {
     const newReviews = post.reviews;
     newReviews[2].content = value;
     newReviews[2].name = name;
-    setPost({ ...post, ...{ reviews: newReviews }});
+    setPost({ ...post, ...{ reviews: newReviews } });
   };
 
   const review4 = (e: InputChange) => {
@@ -102,7 +110,7 @@ const CreateReview = () => {
     const newReviews = post.reviews;
     newReviews[3].content = value;
     newReviews[3].name = name;
-    setPost({ ...post, ...{ reviews: newReviews }});
+    setPost({ ...post, ...{ reviews: newReviews } });
   };
 
   const review5 = (e: InputChange) => {
@@ -110,7 +118,7 @@ const CreateReview = () => {
     const newReviews = post.reviews;
     newReviews[4].content = value;
     newReviews[4].name = name;
-    setPost({ ...post, ...{ reviews: newReviews }});
+    setPost({ ...post, ...{ reviews: newReviews } });
   };
 
   const handleChangeTextArea = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -124,24 +132,24 @@ const CreateReview = () => {
   };
 
   const handleSubmit = async () => {
-    const data = { ...post }
-    if (selected === 'lecturer') {
-      data.subject = ''
+    const data = { ...post };
+    if (selected === "lecturer") {
+      data.subject = "";
     } else {
-      data.lecturer = ''
+      data.lecturer = "";
     }
-    console.log(data)
-    onCreatePost(data)
+    console.log(data);
+    onCreatePost(data);
   };
 
   const onCreatePost = async (post: object) => {
     try {
-      const { data } = await createPost(post)
-      console.log(data)
+      const { data } = await createPost(post);
+      console.log(data);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   return (
     <div className="my-4 create_review">
@@ -190,7 +198,11 @@ const CreateReview = () => {
                 onChange={handleChangeSelect}
               >
                 <option>Chọn giảng viên</option>
-                {lecturers.map(lecturer => <option key={lecturer.id} value={lecturer.id}>{lecturer.name}</option>)}
+                {lecturers.map((lecturer) => (
+                  <option key={lecturer.id} value={lecturer.id}>
+                    {lecturer.name}
+                  </option>
+                ))}
               </select>
             ) : (
               <select
@@ -200,7 +212,11 @@ const CreateReview = () => {
                 onChange={handleChangeSelect}
               >
                 <option>Chọn môn học</option>
-                {subjects.map(subject => <option key={subject.id} value={subject.id}>{subject.name}</option>)}
+                {subjects.map((subject) => (
+                  <option key={subject.id} value={subject.id}>
+                    {subject.name}
+                  </option>
+                ))}
               </select>
             )}
           </div>
@@ -216,7 +232,7 @@ const CreateReview = () => {
           <label htmlFor="reviews" className="post-label">
             {selected === "lecturer"
               ? "Mức độ nghiêm khắc"
-              : "Nội dung môn học"}
+              : "Đánh giá khác môn học"}
           </label>
         </div>
         <div className="col-8">
@@ -224,9 +240,11 @@ const CreateReview = () => {
             type="text"
             className="form-control"
             id="review0"
-            name={selected === "lecturer"
-              ? "Mức độ nghiêm khắc"
-              : "Nội dung môn học"}
+            name={
+              selected === "lecturer"
+                ? "Mức độ nghiêm khắc"
+                : "Đánh giá khác môn học"
+            }
             value={post.reviews[0].content}
             onChange={review1}
           />
@@ -237,7 +255,7 @@ const CreateReview = () => {
         <div className="col-4">
           <label htmlFor="reviews" className="post-label">
             {selected === "lecturer"
-              ? "Mức độ hiểu bài"
+              ? "Phương pháp giảng dạy"
               : "Cách thức tính điểm"}
           </label>
         </div>
@@ -246,9 +264,11 @@ const CreateReview = () => {
             type="text"
             className="form-control"
             id="review1"
-            name={selected === "lecturer"
-              ? "Mức độ hiểu bài"
-              : "Cách thức tính điểm"}
+            name={
+              selected === "lecturer"
+                ? "Phương pháp giảng dạy"
+                : "Cách thức tính điểm"
+            }
             value={post.reviews[1].content}
             onChange={review2}
           />
@@ -258,7 +278,9 @@ const CreateReview = () => {
       <div className="row mt-4">
         <div className="col-4">
           <label htmlFor="reviews" className="post-label">
-            {selected === "lecturer" ? "Điểm số" : "Hình thức thi giữa kỳ"}
+            {selected === "lecturer"
+              ? "Hình thức đánh giá sinh viên"
+              : "Hình thức thi giữa kỳ"}
           </label>
         </div>
         <div className="col-8">
@@ -266,7 +288,11 @@ const CreateReview = () => {
             type="text"
             className="form-control"
             id="review2"
-            name={selected === "lecturer" ? "Điểm số" : "Hình thức thi giữa kỳ"}
+            name={
+              selected === "lecturer"
+                ? "Hình thức đánh giá sinh viên"
+                : "Hình thức thi giữa kỳ"
+            }
             value={post.reviews[2].content}
             onChange={review3}
           />
@@ -286,9 +312,11 @@ const CreateReview = () => {
             type="text"
             className="form-control"
             id="review3"
-            name={selected === "lecturer"
-              ? "Tương tác với sinh viên"
-              : "Hình thức thi cuối kỳ"}
+            name={
+              selected === "lecturer"
+                ? "Tương tác với sinh viên"
+                : "Hình thức thi cuối kỳ"
+            }
             value={post.reviews[3].content}
             onChange={review4}
           />
@@ -306,7 +334,9 @@ const CreateReview = () => {
             type="text"
             className="form-control"
             id="review4"
-            name={selected === "lecturer" ? "Môn học đề xuất" : "Giảng viên đề xuất"}
+            name={
+              selected === "lecturer" ? "Môn học đề xuất" : "Giảng viên đề xuất"
+            }
             value={post.reviews[4].content}
             onChange={review5}
           />
@@ -316,7 +346,7 @@ const CreateReview = () => {
       <div className="row mt-4">
         <div className="form-group">
           <label htmlFor="content" className="post-label">
-            Nội dung
+            Đánh giá khác
           </label>
           <textarea
             className="form-control"

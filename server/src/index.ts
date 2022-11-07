@@ -4,12 +4,12 @@ import dotenv from 'dotenv'
 import bodyParser from 'body-parser'
 import cors from 'cors'
 import helmet from 'helmet'
-import DB_URI from './config/database.config'
 import routes from './api/v1/routes'
 
 dotenv.config()
 
 const PORT = process.env.PORT
+const DB_URI = process.env.DB_URI
 
 const app: Application = express()
 
