@@ -1,11 +1,13 @@
 import React, { useEffect, useCallback, useState } from "react";
 import { useParams } from "react-router-dom";
 
-import { IParams } from "../../utils/TypeScript";
+import { IParams, IComment } from "../../utils/TypeScript";
+import { Reaction } from "../../utils/enum";
 import avatar from "../../images/avatar.png";
-import Comment from "../../components/review/Comment";
+import CommentElement from "../../components/review/CommentElement";
 import { getPostBySlug } from "../../api/post";
 import { lecturers, subjects } from "../create_review";
+import CommentForm from "../../components/review/CommentForm";
 
 export interface Author {
   nickname: string;
@@ -20,6 +22,8 @@ export interface Post {
   title: string;
   slug: string;
   content: string;
+  likes: number;
+  dislikes: number;
   reviews: Review[];
   tags: any[];
   created_at: string;
@@ -34,7 +38,11 @@ export interface Review {
 
 const DetailReview = () => {
   const slug = useParams<IParams>().slug;
-  const [postData, setPostData] = useState<{ post: Post; author: Author }>();
+  const [postData, setPostData] = useState<{
+    post: Post;
+    author: Author;
+    comments: IComment[];
+  }>();
   useEffect(() => {
     fetchPost();
   }, []);
@@ -52,11 +60,6 @@ const DetailReview = () => {
   const selected = postData?.post.lecturer_id ? "lecturer" : "subject";
 
   // *handleReaction
-  enum Reaction {
-    Null = -1,
-    Dislike,
-    Like,
-  }
   const [clientReaction, setClientReaction] = useState(Reaction.Null);
   const handleReactionButton = (reactionCode: number) => {
     switch (clientReaction) {
@@ -67,7 +70,6 @@ const DetailReview = () => {
         setClientReaction(reactionCode);
         break;
     }
-    console.log(clientReaction === Reaction.Like);
   };
 
   return (
@@ -165,24 +167,11 @@ const DetailReview = () => {
       </div>
 
       <h3 className="mt-5">Bình luận</h3>
-      <Comment />
+      {postData?.comments?.map((item) => (
+        <CommentElement comment={item} />
+      ))}
 
-      {/* CommentForm */}
-      <div className="row mt-5 align-items-center justify-content-center commentContainer">
-        <div className="col-2 d-flex justify-content-end">
-          <img src={avatar} alt="avatar" className="commentAvt"></img>
-        </div>
-        <div className="col-9">
-          <form>
-            <input
-              className="commentInput"
-              type="text"
-              placeholder="Viết bình luận..."
-            ></input>
-          </form>
-        </div>
-      </div>
-      {/* End CommentForm */}
+      <CommentForm id={postData ? postData.post._id : ""} />
     </div>
   );
 };
