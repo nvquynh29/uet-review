@@ -10,8 +10,9 @@ const getPostBySlug = async (slug: string) => {
   return data
 }
 
-const getListPost = async () => {
-  const { data } = await instance.get('/posts')
+const getListPost = async (search: string) => {
+  let value = search ? search : `?page=${1}`;
+  const { data } = await instance.get(`/posts/${value}`)
   return data
 }
 
