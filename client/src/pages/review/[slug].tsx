@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useState } from "react";
+import { useEffect, useCallback, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { IParams, IComment } from "../../utils/TypeScript";
@@ -8,6 +8,7 @@ import CommentElement from "../../components/review/CommentElement";
 import { getPostBySlug } from "../../api/post";
 import { lecturers, subjects } from "../create_review";
 import CommentForm from "../../components/review/CommentForm";
+import { io, Socket } from 'socket.io-client';
 
 export interface Author {
   nickname: string;
@@ -36,32 +37,65 @@ export interface Review {
   _id: string;
 }
 
-const DetailReview = () => {
-  const slug = useParams<IParams>().slug;
-  const [postData, setPostData] = useState<{
+export type PostData = {
     post: Post;
     author: Author;
     comments: IComment[];
-  }>();
+    reaction: number;  // reaction type
+}
+
+const socket: Socket = io(process.env.REACT_APP_SOCKET_URL as string)
+
+const DetailReview = () => {
+  const slug = useParams<IParams>().slug;
+  const [postData, setPostData] = useState<PostData>();
+  // TODO: Refactor using T & { type: ReactionType }
+  const [reactionCount, setReactionCount] = useState<{likes: number, dislikes: number}>({
+    likes: 0,
+    dislikes: 0,
+  })
+
   useEffect(() => {
     fetchPost();
   }, []);
 
+  useEffect(() => {
+    socket.on('post-reacted', (data) => {
+      const { likes, dislikes } = data
+      setReactionCount({likes, dislikes})
+    })
+
+    // return () => {
+    //   socket.disconnect()
+    // }
+  }, [])
+
   const fetchPost = useCallback(async () => {
     try {
       const { data } = await getPostBySlug(slug);
-      console.log(data);
       setPostData(data);
+      setReactionCount({
+        likes: data.post.likes as number,
+        dislikes: data.post.dislikes as number,
+      })
+      setClientReaction(data.reaction)
     } catch (error) {
       console.log(error);
     }
   }, []);
 
+  const reactPost = async (reactionCode: Reaction) => {
+    socket.emit('react-post', {
+      slug,
+      code: reactionCode,
+    })
+  }
+
   const selected = postData?.post.lecturer_id ? "lecturer" : "subject";
 
   // *handleReaction
   const [clientReaction, setClientReaction] = useState(Reaction.Null);
-  const handleReactionButton = (reactionCode: number) => {
+  const handleReactionButton = (reactionCode: Reaction) => {
     switch (clientReaction) {
       case reactionCode:
         setClientReaction(Reaction.Null);
@@ -70,7 +104,24 @@ const DetailReview = () => {
         setClientReaction(reactionCode);
         break;
     }
+    reactPost(reactionCode)
   };
+
+  const updateComment = (comment: IComment) => {
+    setPostData(prev => {
+      const newComments: IComment[] = []
+      prev?.comments.forEach(item => {
+        newComments.push(item)
+      });
+
+      newComments.push(comment)
+      return {
+        post: prev?.post,
+        author: prev?.author,
+        comments: newComments,
+      } as PostData
+    })
+  }
 
   return (
     <div className="my-4 detail_review">
@@ -99,7 +150,7 @@ const DetailReview = () => {
               }
               style={{ color: "#5b8cf7" }}
             ></i>
-            <span>{clientReaction === Reaction.Like ? 0 + 1 : 0}</span>
+            <span>{reactionCount.likes}</span>
           </button>
           <button
             className="reactionButton"
@@ -115,7 +166,7 @@ const DetailReview = () => {
               }
               style={{ color: "#f10000" }}
             ></i>
-            <span>{clientReaction === Reaction.Dislike ? 0 + 1 : 0}</span>
+            <span>{reactionCount.dislikes}</span>
           </button>
         </div>
       </div>
@@ -171,7 +222,7 @@ const DetailReview = () => {
         <CommentElement comment={item} />
       ))}
 
-      <CommentForm id={postData ? postData.post._id : ""} />
+      <CommentForm id={postData ? postData.post._id : ""} updateComments={updateComment} />
     </div>
   );
 };

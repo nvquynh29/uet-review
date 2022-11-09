@@ -1,9 +1,12 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+import { io, Socket } from 'socket.io-client'
 import { getListPost } from '../api/post'
 import { Post, Author } from './review/[slug]'
 import avatar from "../images/avatar.png";
 import { Link, useHistory } from 'react-router-dom';
 import Pagination from '../components/global/Pagination';
+
+const socket: Socket = io('ws://localhost:5500')
 
 const Home = () => {
   const [posts, setPosts] = useState<[{ post: Post, author: Author }]>()
@@ -14,9 +17,18 @@ const Home = () => {
 
   useEffect(() => {
     fetchListPost(search)
-    console.log(search)
   }, [search])
 
+  useEffect(() => {
+    socket.on('post-liked', (data) => {
+      console.log(data)
+    })
+
+    // return () => {
+    //   socket.disconnect()
+    // }
+  }, [socket])
+  
   const fetchListPost = useCallback(
     async (search) => {
       try {
