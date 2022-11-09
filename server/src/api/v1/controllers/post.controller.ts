@@ -2,8 +2,9 @@ import { NextFunction, Request, Response } from 'express'
 import { Types } from 'mongoose'
 import Post, { IPost, IReview } from '../models/post.model'
 import { generateSlug } from '../../../pkg/slugify'
-import { IPagination } from '../types'
+import { IPagination, userId } from '../types'
 import Comment, { IComment } from '../models/comment.model'
+import { getPostReactionType } from '../services/reaction.service'
 
 const createPost = async (req: Request, res: Response) => {
   const body = req.body
@@ -45,12 +46,15 @@ const getPost = async (req: Request, res: Response) => {
   }
 
   const comments = await Comment.find({ post_id: post._id })
+  // TODO: Using middleware
+  const currentUserId = userId
+  const reaction = await getPostReactionType(currentUserId, slug)
 
   const author = {
     nickname: 'Trịnh Mai Huy',
     email: 'trinh.mai.huy@gmail.com',
   }
-  return res.json({ data: { post, author, comments } })
+  return res.json({ data: { post, author, comments, reaction } })
 }
 
 const getListPost = async (req: Request, res: Response, next: NextFunction) => {
