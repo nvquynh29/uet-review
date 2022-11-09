@@ -8,21 +8,16 @@ import { getPostReactionType } from '../services/reaction.service'
 
 const createPost = async (req: Request, res: Response) => {
   const body = req.body
+  const subjectId = body.subject != '' ? new Types.ObjectId(body.subject) : undefined
+  const lecturerId = body.lecturer != '' ? new Types.ObjectId(body.lecturer) : undefined
   const post: IPost = {
     author_id: new Types.ObjectId(body.user),
-    subject_id: undefined,
-    lecturer_id: new Types.ObjectId(body.lecturer),
+    subject_id: subjectId,
+    lecturer_id: lecturerId,
     title: body.title,
     content: body.content,
     reviews: new Types.DocumentArray<IReview>([]),
     tags: [],
-  }
-
-  if (body.subject != '') {
-    post.subject_id = new Types.ObjectId(body.subject)
-  }
-  if (body.lecturer != '') {
-    post.lecturer_id = new Types.ObjectId(body.lecturer)
   }
 
   body.reviews.forEach(function (review: IReview) {
