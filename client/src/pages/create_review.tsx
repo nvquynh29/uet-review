@@ -8,18 +8,18 @@ export const lecturers = [
     name: "Nguyễn Văn A",
   },
   {
-    id: "636125870f506d29b2bafaaa",
+    id: "636bc393891242fb6d0957a1",
     name: "Nguyễn Văn B",
   },
 ];
 
 export const subjects = [
   {
-    id: "636125870f506d29b2baf94a",
+    id: "636bc404891242fb6d09585c",
     name: "Giải tích 1",
   },
   {
-    id: "636125870f506d29b2bafccc",
+    id: "636bc491891242fb6d0959ab",
     name: "Giải tích 2",
   },
 ];
