@@ -6,7 +6,7 @@ import avatar from "../images/avatar.png";
 import { Link, useHistory } from 'react-router-dom';
 import Pagination from '../components/global/Pagination';
 
-const socket: Socket = io('ws://localhost:5500')
+const socket: Socket = io(process.env.REACT_APP_SOCKET_URL as string)
 
 const Home = () => {
   const [posts, setPosts] = useState<[{ post: Post, author: Author }]>()
