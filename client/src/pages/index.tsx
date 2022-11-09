@@ -77,7 +77,7 @@ const Home = () => {
                     align-items-center"
                     >
                       {
-                        <div className="reactionContainer">
+                        <div className="reactionContainer" style={{ cursor: "default" }}>
                           <button
                             className="reactionButton"
                             id="likeButton"
