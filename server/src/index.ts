@@ -16,9 +16,9 @@ io.on('connection', (socket) => {
   console.log('Connect...')
   socket.on('react-post', async (data) => {
     const { code, slug } = data
-    const { likes, dislikes } = await reactPost(userId, slug, code)
+    const res = await reactPost(userId, slug, code)
 
-    io.emit('post-reacted', { likes, dislikes })
+    io.emit('post-reacted', res)
   })
 
   socket.on('comment-post', (data) => {
