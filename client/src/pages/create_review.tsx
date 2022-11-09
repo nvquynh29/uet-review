@@ -33,7 +33,7 @@ const lecturerReviews = [
 ];
 
 const subjectReviews = [
-  "Đánh giá khác môn học",
+  "Nội dung môn học",
   "Cách thức tính điểm",
   "Hình thức thi giữa kỳ",
   "Hình thức thi cuối kỳ",
@@ -232,7 +232,7 @@ const CreateReview = () => {
           <label htmlFor="reviews" className="post-label">
             {selected === "lecturer"
               ? "Mức độ nghiêm khắc"
-              : "Đánh giá khác môn học"}
+              : "Nội dung môn học"}
           </label>
         </div>
         <div className="col-8">
@@ -243,7 +243,7 @@ const CreateReview = () => {
             name={
               selected === "lecturer"
                 ? "Mức độ nghiêm khắc"
-                : "Đánh giá khác môn học"
+                : "Nội dung môn học"
             }
             value={post.reviews[0].content}
             onChange={review1}
