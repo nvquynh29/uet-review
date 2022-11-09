@@ -77,11 +77,11 @@ const Home = () => {
                     align-items-center"
                     >
                       {
-                        <div className="reactionContainer">
+                        <div className="reactionContainer" style={{ cursor: "default" }}>
                           <button
                             className="reactionButton"
                             id="likeButton"
-                            style={{ fontSize: "1.05rem" }}
+                            style={{ fontSize: "1.05rem", cursor: "default" }}
                           >
                             <i className="bi bi-hand-thumbs-up"></i>
                             <span>{item.post.likes}</span>
@@ -89,7 +89,7 @@ const Home = () => {
                           <button
                             className="reactionButton"
                             id="dislikeButton"
-                            style={{ fontSize: "1.05rem" }}
+                            style={{ fontSize: "1.05rem", cursor: "default" }}
                           >
                             <i className="bi bi-hand-thumbs-down"></i>
                             <span>{item.post.dislikes}</span>
