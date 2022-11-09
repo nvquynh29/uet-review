@@ -22,10 +22,11 @@ const reactPost = async (userId: string, slug: string, type: ReactionTypes) => {
     await Reaction.create(newReaction)
   }
   const { likes, dislikes } = await getPostReactionCount(slug)
+  const reactionType = await getPostReactionType(userId, slug)
   
   // update reaction count
   await Post.findOneAndUpdate({ slug }, { likes, dislikes })
-  return { likes, dislikes }
+  return { likes, dislikes, reaction: reactionType }
 }
 
 const reactComment = async (userId: string, commentId: string, type: ReactionTypes) => {
@@ -46,8 +47,9 @@ const reactComment = async (userId: string, commentId: string, type: ReactionTyp
     await Reaction.create(newReaction)
   }
   const { likes, dislikes } = await getCommentReactionCount(commentId)
+  const reactionType = await getCommentReactionType(userId, commentId)
   await Comment.findOneAndUpdate({ _id: commentId }, { likes, dislikes })
-  return { likes, dislikes, _id: commentId }
+  return { likes, dislikes, _id: commentId, reaction: reactionType }
 }
 
 const getPostReactionCount = async (slug: string) => {
@@ -69,6 +71,14 @@ const getCommentReactionCount = async (commentId: string) => {
 
 const getPostReactionType = async (userId: string, slug: string) => {
   const reaction = await Reaction.findOne({ user_id: userId, slug })
+  if (reaction) {
+    return reaction.type
+  }
+  return ReactionTypes.NONE
+}
+
+const getCommentReactionType = async (userId: string, commentId: string) => {
+  const reaction = await Reaction.findOne({ user_id: userId, comment_id: commentId })
   if (reaction) {
     return reaction.type
   }

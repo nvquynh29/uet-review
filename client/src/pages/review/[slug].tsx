@@ -61,8 +61,9 @@ const DetailReview = () => {
 
   useEffect(() => {
     socket.on('post-reacted', (data) => {
-      const { likes, dislikes } = data
+      const { likes, dislikes, reaction } = data
       setReactionCount({likes, dislikes})
+      setClientReaction(reaction)
     })
 
     // return () => {

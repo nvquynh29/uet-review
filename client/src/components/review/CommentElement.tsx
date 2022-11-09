@@ -18,9 +18,10 @@ function CommentElement(props: IProps) {
 
   useEffect(() => {
     socket.on('comment-reacted', (data) => {
-      const { _id, likes, dislikes } = data
+      const { _id, likes, dislikes, reaction } = data
       if (props.comment._id === _id) {
         setReactionCount({likes, dislikes})
+        setClientReaction(reaction)
       }
     })
 
