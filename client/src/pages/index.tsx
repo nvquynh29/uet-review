@@ -1,83 +1,87 @@
-import { useState, useEffect, useCallback } from 'react'
-import { io, Socket } from 'socket.io-client'
-import { getListPost } from '../api/post'
-import { Post, Author } from './review/[slug]'
+import { useCallback, useEffect, useState } from "react";
+import { Link, useHistory } from "react-router-dom";
+import { io, Socket } from "socket.io-client";
+import { getListPost } from "../api/post";
+import Pagination from "../components/global/Pagination";
 import avatar from "../images/avatar.png";
-import { Link, useHistory } from 'react-router-dom';
-import Pagination from '../components/global/Pagination';
+import { Author, Post } from "./review/[slug]";
 
-const socket: Socket = io(process.env.REACT_APP_SOCKET_URL as string)
+const socket: Socket = io(process.env.REACT_APP_SOCKET_URL as string);
 
 const Home = () => {
-  const [posts, setPosts] = useState<[{ post: Post, author: Author }]>()
-  const [total, setTotal] = useState(0)
+  const [posts, setPosts] = useState<[{ post: Post; author: Author }]>();
+  const [total, setTotal] = useState(0);
 
-  const history = useHistory()
+  const history = useHistory();
   const { search } = history.location;
 
   useEffect(() => {
-    fetchListPost(search)
-  }, [search])
+    fetchListPost(search);
+  }, [search]);
 
   useEffect(() => {
-    socket.on('post-liked', (data) => {
-      console.log(data)
-    })
+    socket.on("post-liked", (data) => {
+      console.log(data);
+    });
 
     // return () => {
     //   socket.disconnect()
     // }
-  }, [socket])
-  
-  const fetchListPost = useCallback(
-    async (search) => {
-      try {
-        const res = await getListPost(search)
-        setPosts(res.data)
-        setTotal(res.meta.total_page)
-      } catch (error) {
-        console.log(error)
-      }
-    },
-    [],
-  )
+  }, [socket]);
+
+  const fetchListPost = useCallback(async (search) => {
+    try {
+      const res = await getListPost(search);
+      setPosts(res.data);
+      setTotal(res.meta.total_page);
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
 
   return (
     <>
       <div className="list-post mt-4">
-        {posts?.map(item => (
-          <div key={item.post._id} className="card mb-3" style={{ minWidth: "260px" }}>
+        {posts?.map((item) => (
+          <div
+            key={item.post._id}
+            className="card mb-3"
+            style={{ minWidth: "260px" }}
+          >
             <div className="row g-0 p-2">
               <div className="col-md">
                 <div className="card-body">
                   <div className="row">
-                    <div className="col-md-8">
+                    <div className="col-md-7">
                       <h5 className="card-title">
-                        <Link to={`/review/${item.post.slug}`}
-                          className="text-capitalize text-decoration-none">
+                        <Link
+                          to={`/review/${item.post.slug}`}
+                          className="text-capitalize text-decoration-none"
+                        >
                           {item.post.title}
                         </Link>
                       </h5>
                     </div>
-                    <div className="col-md-4 d-flex justify-content-end">
+                    <div className="col-md-3 d-flex justify-content-end align-items-center">
                       <small className="text-muted">
                         by {item.author.nickname}
                       </small>
-                      <img src={avatar} alt="avatar" style={{
-                        height: 40,
-                        width: 40
-                      }}></img>
+                      <img
+                        src={avatar}
+                        alt="avatar"
+                        style={{
+                          height: 40,
+                          width: 40,
+                          marginLeft: "1rem",
+                        }}
+                      ></img>
                     </div>
-                  </div>
-                  <p className="card-text">{item.post.content}</p>
-
-                  {
-                    item.post.title &&
-                    <div className="card-text d-flex justify-content-between
-                    align-items-center"
-                    >
+                    <div className="col-md-2 d-flex justify-content-end">
                       {
-                        <div className="reactionContainer" style={{ cursor: "default" }}>
+                        <div
+                          className="reactionContainer"
+                          style={{ cursor: "default" }}
+                        >
                           <button
                             className="reactionButton"
                             id="likeButton"
@@ -96,11 +100,29 @@ const Home = () => {
                           </button>
                         </div>
                       }
+                    </div>
+                  </div>
+                  <p className="card-text">
+                    <span>{item.post.content.substring(0, 50)}</span>
+                    <span>... </span>
+                    <Link
+                      to={`/review/${item.post.slug}`}
+                      style={{ fontSize: "1rem", fontWeight: "500" }}
+                    >
+                      Xem thêm
+                    </Link>
+                  </p>
+
+                  {item.post.title && (
+                    <div
+                      className="card-text d-flex justify-content-between
+                    align-items-center"
+                    >
                       <small className="text-muted">
                         {new Date(item.post.created_at).toLocaleString()}
                       </small>
                     </div>
-                  }
+                  )}
                 </div>
               </div>
             </div>
@@ -108,12 +130,9 @@ const Home = () => {
         ))}
       </div>
 
-      <Pagination
-        total={total}
-      />
-
+      <Pagination total={total} />
     </>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;
