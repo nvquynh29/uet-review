@@ -2,6 +2,11 @@ import React, { useState } from "react";
 import { createPost } from "../api/post";
 import { InputChange } from "../utils/TypeScript";
 
+interface IReviews {
+  name: string;
+  content: string;
+}
+
 export const lecturers = [
   {
     id: "636125870f506d29b2baf95b",
@@ -46,11 +51,11 @@ const CreateReview = () => {
     title: "",
     content: "",
     reviews: [
-      { name: "", content: "" },
-      { name: "", content: "" },
-      { name: "", content: "" },
-      { name: "", content: "" },
-      { name: "", content: "" },
+      { name: "Mức độ nghiêm khắc", content: "" },
+      { name: "Phương pháp giảng dạy", content: "" },
+      { name: "Hình thức đánh giá sinh viên", content: "" },
+      { name: "Tương tác với sinh viên", content: "" },
+      { name: "Môn học đề xuất", content: "" },
     ],
     subject: "",
     lecturer: "",
@@ -61,6 +66,37 @@ const CreateReview = () => {
   const [selected, setSelected] = useState("lecturer");
 
   const isSelected = (value: string): boolean => selected === value;
+
+  const validCreateReview = (title: string, content: string, reviews: IReviews[]) => {
+    const err: string[] = []
+
+    if (title.trim().length < 10) {
+      err.push("Tiêu đề ít nhất 10 ký tự.")
+    } else if (title.trim().length > 100) {
+      err.push("Tiêu đề nhiều nhất 100 ký tự.")
+    }
+
+    for (let key in reviews) {
+      let value = reviews[key]; 
+      if (value.content.trim().length < 10) {
+        err.push(value.name + " ít nhất 10 ký tự.")
+      } else if (title.trim().length > 100) {
+        err.push(value.name + " nhiều nhất 1000 ký tự.")
+      }
+    }
+
+    if (content.trim().length < 10) {
+      err.push("Đánh giá khác ít nhất 10 ký tự.")
+    } else if (title.trim().length > 100) {
+      err.push("Đánh giá khác nhiều nhất 1000 ký tự.")
+    }
+
+    return {
+      errMsg: err,
+      errLength: err.length
+    }
+
+  }
 
   const handleChangeRadio = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedReview = e.currentTarget.value;
@@ -139,7 +175,16 @@ const CreateReview = () => {
       data.lecturer = "";
     }
     console.log(data);
-    onCreatePost(data);
+    const check = validCreateReview(data.title, data.content, data.reviews)
+    if(check.errLength !== 0){
+      let error = "";
+      for (var i = 0; i < check.errLength; ++i) {
+        error += check.errMsg[i] + "\n"
+      }
+      window.alert(error)
+    } else {
+      onCreatePost(data);
+    }
   };
 
   const onCreatePost = async (post: object) => {
@@ -155,7 +200,7 @@ const CreateReview = () => {
     <div className="my-4 create_review">
       <div className="form-group position-relative">
         <label htmlFor="title" className="post-label">
-          Tên bài viết
+          Tiêu đề
         </label>
         <input
           type="text"
