@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 import { jwtHelper } from '../helpers/jwt.helper'
 import User, { IUser } from '../models/user.model'
-import { Request, Response } from 'express'
+import { Request, Response, CookieOptions } from 'express'
 import { MongooseID, Role } from '../types/index'
 
 const updateRefreshToken = (id: MongooseID, refreshToken: string) => {

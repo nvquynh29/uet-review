@@ -2,11 +2,11 @@ import { ICredential } from '../utils/TypeScript'
 import instance from './axios'
 
 export const signup = async (credential: ICredential) => {
-  const { data } = await instance.post('/signup', credential)
+  const { data } = await instance.post('/auth/signup', credential)
   return data
 }
 export const login = async (credential: ICredential) => {
-  const { data } = await instance.post('/login', credential)
+  const { data } = await instance.post('/auth/login', credential)
   return data
 }
 

@@ -89,6 +89,7 @@ const getListPost = async (req: Request, res: Response, next: NextFunction) => {
 const commentPost = async (req: Request, res: Response) => {
   try {
     const { id } = req.params
+    const { _id, role } = res.locals.user
     const post = await Post.find({ _id: id })
     if (post) {
       const { content } = req.body
@@ -97,7 +98,7 @@ const commentPost = async (req: Request, res: Response) => {
         return res.sendStatus(400)
       }
       const comment: IComment = {
-        author_id: new Types.ObjectId('636125870f506d29b2baf95b'),
+        author_id: new Types.ObjectId(_id),
         post_id: new Types.ObjectId(id),
         content,
       }
