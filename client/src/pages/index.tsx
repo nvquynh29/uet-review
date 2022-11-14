@@ -52,7 +52,7 @@ const Home = () => {
               <div className="col-md">
                 <div className="card-body">
                   <div className="row">
-                    <div className="col-md-7">
+                    <div className="col-md-10">
                       <h5 className="card-title">
                         <Link
                           to={`/review/${item.post.slug}`}
@@ -61,20 +61,6 @@ const Home = () => {
                           {item.post.title}
                         </Link>
                       </h5>
-                    </div>
-                    <div className="col-md-3 d-flex justify-content-end align-items-center">
-                      <small className="text-muted">
-                        by {item.author.nickname}
-                      </small>
-                      <img
-                        src={avatar}
-                        alt="avatar"
-                        style={{
-                          height: 40,
-                          width: 40,
-                          marginLeft: "1rem",
-                        }}
-                      ></img>
                     </div>
                     <div className="col-md-2 d-flex justify-content-end">
                       {
@@ -101,6 +87,20 @@ const Home = () => {
                         </div>
                       }
                     </div>
+                  </div>
+                  <div className="mb-2">
+                    <small className="text-muted">
+                      by {item.author.nickname}
+                    </small>
+                    <img
+                      src={avatar}
+                      alt="avatar"
+                      style={{
+                        height: 30,
+                        width: 30,
+                        marginLeft: "0.8rem",
+                      }}
+                    ></img>
                   </div>
                   <p className="card-text">
                     <span>{item.post.content.substring(0, 50)}</span>
