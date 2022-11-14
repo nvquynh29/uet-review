@@ -5,8 +5,13 @@ import { Post, Author } from './review/[slug]'
 import avatar from "../images/avatar.png";
 import { Link, useHistory } from 'react-router-dom';
 import Pagination from '../components/global/Pagination';
+import { getAccessToken } from '../utils/cookies';
 
-const socket: Socket = io(process.env.REACT_APP_SOCKET_URL as string)
+const socket: Socket = io(process.env.REACT_APP_SOCKET_URL as string, {
+  auth: {
+    token: getAccessToken()
+  }
+})
 
 const Home = () => {
   const [posts, setPosts] = useState<[{ post: Post, author: Author }]>()

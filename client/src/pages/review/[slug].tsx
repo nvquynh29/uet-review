@@ -9,6 +9,7 @@ import { getPostBySlug } from "../../api/post";
 import { lecturers, subjects } from "../create_review";
 import CommentForm from "../../components/review/CommentForm";
 import { io, Socket } from 'socket.io-client';
+import { getAccessToken } from '../../utils/cookies';
 
 export interface Author {
   nickname: string;
@@ -44,7 +45,11 @@ export type PostData = {
     reaction: number;  // reaction type
 }
 
-const socket: Socket = io(process.env.REACT_APP_SOCKET_URL as string)
+const socket: Socket = io(process.env.REACT_APP_SOCKET_URL as string, {
+  auth: {
+    token: getAccessToken()
+  }
+})
 
 const DetailReview = () => {
   const slug = useParams<IParams>().slug;

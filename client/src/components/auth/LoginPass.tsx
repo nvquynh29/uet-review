@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import { login } from '../../api/auth';
+import Cookies from 'universal-cookie'
+import { FormSubmit, ICredential, InputChange } from "../../utils/TypeScript";
 
-import { FormSubmit, InputChange } from "../../utils/TypeScript";
-
+const cookies = new Cookies()
 const LoginPass = () => {
   const initialState = { account: "", password: "" };
   const [userLogin, setUserLogin] = useState(initialState);
@@ -14,9 +16,26 @@ const LoginPass = () => {
     setUserLogin({ ...userLogin, [name]: value });
   };
 
-  const handleSubmit = (e: FormSubmit) => {
+  const writeCookies = (accessToken: string, refreshToken: string) => {
+    cookies.set('accessToken', accessToken, { 
+        path: '/', 
+        maxAge: 24 * 60 * 60, // 1d
+       })
+    if (refreshToken) {
+      cookies.set('refreshToken', refreshToken, { 
+        path: '/', 
+        maxAge: 30 * 24 * 60 * 60, // 30d
+       })
+    }
+  }
+
+  const handleSubmit = async (e: FormSubmit) => {
     e.preventDefault();
-    console.log(userLogin);
+    const { accessToken, refreshToken } = await login({
+      email: userLogin.account,
+      password: userLogin.password,
+    } as ICredential)
+    writeCookies(accessToken, refreshToken)
   };
 
   return (
