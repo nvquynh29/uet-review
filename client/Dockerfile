@@ -10,5 +10,10 @@ WORKDIR /app
 RUN yarn global add typescript && yarn
 COPY . .
 
-CMD ["yarn", "start"]
-EXPOSE 3000
+RUN yarn build
+
+FROM nginx:1.19.0
+COPY --from=builder /app/build /usr/share/nginx/html
+COPY ./deploy/nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
