@@ -18,18 +18,21 @@ const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body
     const user = await User.findOne({ email })
+
     if (!user) {
       return res.status(401).json({ error: 'Invalid credential' })
     }
+    const userInfo = { _id: user._id, role: user.role, nickname: user.nickname }
+
     const passwordMatch = bcrypt.compareSync(password, user.password)
     if (passwordMatch) {
       const accessToken = await jwtHelper.generateToken(
-        { _id: user._id, role: user.role },
+        userInfo,
         process.env.ACCESS_TOKEN_SECRET as string,
         '1h'
       )
       const refreshToken = await jwtHelper.generateToken(
-        { _id: user._id, role: user.role },
+        userInfo,
         process.env.REFRESH_TOKEN_SECRET as string,
         '30d'
       )
@@ -91,7 +94,7 @@ const refreshToken = async (req: Request, res: Response) => {
   try {
     jwt.verify(refreshTokenFromClient, process.env.REFRESH_TOKEN_SECRET as string)
     const accessToken = await jwtHelper.generateToken(
-      { _id: user._id, role: user.role },
+      { _id: user._id, role: user.role, nickname: user.nickname },
       process.env.ACCESS_TOKEN_SECRET as string,
       '1h'
     )

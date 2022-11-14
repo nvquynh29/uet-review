@@ -22,7 +22,19 @@ const verifyToken = (token: string, secretSignature: string, options: jwt.Verify
     })
   })
 
+const extractTokenInfo = (token: string, options?: jwt.VerifyOptions) => {
+  const secretSignature = process.env.ACCESS_TOKEN_SECRET
+  try {
+    const data = jwt.verify(token, secretSignature as string, options)
+    return data as UserInfo
+  } catch (error) {
+    console.log(error)
+    return null
+  }
+}
+
 export const jwtHelper = {
   generateToken,
   verifyToken,
+  extractTokenInfo,
 }

@@ -13,6 +13,7 @@ export type MongooseID = string | Types.ObjectId
 export type UserInfo = {
   _id: MongooseID
   role: string
+  nickname: string
 }
 
 // Enum
@@ -24,7 +25,7 @@ export enum ReactionTypes {
 
 export enum Role {
   USER = 'user',
-  ADMIN = 'admin'
+  ADMIN = 'admin',
 }
 
 // TODO: Remove dummy data
