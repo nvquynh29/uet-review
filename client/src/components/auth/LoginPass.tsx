@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import { login } from '../../api/auth';
 import Cookies from 'universal-cookie'
 import { FormSubmit, ICredential, InputChange } from "../../utils/TypeScript";
+import { useHistory } from "react-router-dom";
 
 const cookies = new Cookies()
 const LoginPass = () => {
   const initialState = { account: "", password: "" };
   const [userLogin, setUserLogin] = useState(initialState);
   const { account, password } = userLogin;
+  const history = useHistory()
 
   const [typePass, setTypePass] = useState(false);
 
@@ -36,6 +38,7 @@ const LoginPass = () => {
       password: userLogin.password,
     } as ICredential)
     writeCookies(accessToken, refreshToken)
+    history.push('/')
   };
 
   return (
@@ -57,7 +60,7 @@ const LoginPass = () => {
 
       <div className="form-group mb-3">
         <label htmlFor="password" className="form-label">
-          Password
+          Mật khẩu
         </label>
 
         <div className="pass">
@@ -71,7 +74,7 @@ const LoginPass = () => {
           />
 
           <small onClick={() => setTypePass(!typePass)}>
-            {typePass ? "Hide" : "Show"}
+            {typePass ? "Ẩn" : "Hiện"}
           </small>
         </div>
       </div>
@@ -81,7 +84,7 @@ const LoginPass = () => {
         className="btn btn-primary w-100 mt-1"
         disabled={account && password ? false : true}
       >
-        Login
+        Đăng nhập
       </button>
     </form>
   );
