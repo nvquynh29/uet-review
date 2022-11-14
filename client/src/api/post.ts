@@ -1,4 +1,4 @@
-import instance from './index'
+import instance from './axios'
 
 const createPost = async (post: object) => {
   const { data } = await instance.post('/posts', post)
@@ -11,7 +11,7 @@ const getPostBySlug = async (slug: string) => {
 }
 
 const getListPost = async (search: string) => {
-  let value = search ? search : `?page=${1}`;
+  let value = search ? search : `?page=${1}`
   const { data } = await instance.get(`/posts/${value}`)
   return data
 }

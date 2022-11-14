@@ -1,8 +1,9 @@
 import { Server } from 'socket.io'
 import dotenv from 'dotenv'
 import { reactPost, reactComment } from './api/v1/services/reaction.service'
-import { ReactionTypes, userId } from './api/v1/types'
+import { ReactionTypes, userId, UserInfo } from './api/v1/types'
 import httpServer from './server'
+import { jwtHelper } from './api/v1/helpers/jwt.helper'
 
 dotenv.config()
 
@@ -15,8 +16,10 @@ const io = new Server(httpServer, {
 io.on('connection', (socket) => {
   console.log('Connect...')
   socket.on('react-post', async (data) => {
+    const accessToken = socket.handshake.auth.token
+    const { _id } = <UserInfo>jwtHelper.extractTokenInfo(accessToken as string)
     const { code, slug } = data
-    const res = await reactPost(userId, slug, code)
+    const res = await reactPost(_id as string, slug, code)
 
     io.emit('post-reacted', res)
   })

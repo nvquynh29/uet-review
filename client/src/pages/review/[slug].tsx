@@ -6,6 +6,7 @@ import { getPostBySlug } from "../../api/post";
 import CommentElement from "../../components/review/CommentElement";
 import CommentForm from "../../components/review/CommentForm";
 import avatar from "../../images/avatar.png";
+import { getAccessToken } from "../../utils/cookies";
 import { Reaction } from "../../utils/enum";
 import { IComment, IParams } from "../../utils/TypeScript";
 import { lecturers, subjects } from "../create_review";
@@ -44,7 +45,11 @@ export type PostData = {
   reaction: number; // reaction type
 };
 
-const socket: Socket = io(process.env.REACT_APP_SOCKET_URL as string);
+const socket: Socket = io(process.env.REACT_APP_SOCKET_URL as string, {
+  auth: {
+    token: getAccessToken(),
+  },
+});
 
 const DetailReview = () => {
   const slug = useParams<IParams>().slug;

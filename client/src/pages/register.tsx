@@ -8,14 +8,14 @@ const Register = () => {
   return (
     <div className="auth_page">
       <div className="auth_box">
-        <h3 className="text-uppercase text-center mb-4">Register</h3>
+        <h3 className="text-uppercase text-center mb-4">Đăng ký</h3>
 
         <RegisterForm />
         
         <p className="mt-2">
-          {`Already have an account? `}
+          {`Bạn đã có tài khoản? `}
           <Link to={`/login`} style={{color: 'crimson'}}>
-            Login Now
+            Đăng nhập ngay
           </Link>
         </p>
 

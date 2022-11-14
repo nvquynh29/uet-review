@@ -4,9 +4,14 @@ import { io, Socket } from "socket.io-client";
 import { getListPost } from "../api/post";
 import Pagination from "../components/global/Pagination";
 import avatar from "../images/avatar.png";
+import { getAccessToken } from "../utils/cookies";
 import { Author, Post } from "./review/[slug]";
 
-const socket: Socket = io(process.env.REACT_APP_SOCKET_URL as string);
+const socket: Socket = io(process.env.REACT_APP_SOCKET_URL as string, {
+  auth: {
+    token: getAccessToken(),
+  },
+});
 
 const Home = () => {
   const [posts, setPosts] = useState<[{ post: Post; author: Author }]>();
