@@ -71,24 +71,24 @@ const CreateReview = () => {
     const err: string[] = []
 
     if (title.trim().length < 10) {
-      err.push("Tiêu đề ít nhất 10 ký tự.")
+      err.push("Tiêu đề quá ngắn! Độ dài tối thiểu là 10 ký tự.")
     } else if (title.trim().length > 100) {
-      err.push("Tiêu đề nhiều nhất 100 ký tự.")
+      err.push("Tiêu đề quá dài! Độ dài tối đa là 100 ký tự.")
     }
 
     for (let key in reviews) {
       let value = reviews[key]; 
       if (value.content.trim().length < 10) {
-        err.push(value.name + " ít nhất 10 ký tự.")
+        err.push(value.name + " quá ngắn! Độ dài tối thiểu là 10 ký tự.")
       } else if (title.trim().length > 100) {
-        err.push(value.name + " nhiều nhất 1000 ký tự.")
+        err.push(value.name + " quá dài! Độ dài tối đa là 1000 ký tự.")
       }
     }
 
     if (content.trim().length < 10) {
-      err.push("Đánh giá khác ít nhất 10 ký tự.")
+      err.push("Đánh giá khác quá ngắn! Độ dài tối thiểu là 10 ký tự.")
     } else if (title.trim().length > 100) {
-      err.push("Đánh giá khác nhiều nhất 1000 ký tự.")
+      err.push("Đánh giá khác quá dài! Độ dài tối đa là 1000 ký tự.")
     }
 
     return {
