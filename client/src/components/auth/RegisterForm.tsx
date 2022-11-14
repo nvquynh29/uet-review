@@ -29,7 +29,7 @@ const RegisterForm = () => {
     <form onSubmit={handleSubmit}>
       <div className="form-group mb-3">
         <label htmlFor="name" className="form-label">
-          Name
+          Họ và tên
         </label>
 
         <input
@@ -39,7 +39,7 @@ const RegisterForm = () => {
           name="name"
           value={name}
           onChange={handleChangeInput}
-          placeholder="Your name is up to 20 chars."
+          placeholder="Tên của bạn có tối đa 20 ký tự."
         />
       </div>
 
@@ -61,7 +61,7 @@ const RegisterForm = () => {
 
       <div className="form-group mb-3">
         <label htmlFor="password" className="form-label">
-          Password
+          Mật khẩu
         </label>
 
         <div className="pass">
@@ -72,18 +72,18 @@ const RegisterForm = () => {
             name="password"
             value={password}
             onChange={handleChangeInput}
-            placeholder="Password must be at least 6 chars."
+            placeholder="Mật khẩu phải có tối thiểu 6 ký tự."
           />
 
           <small onClick={() => setTypePass(!typePass)}>
-            {typePass ? "Hide" : "Show"}
+            {typePass ? "Ẩn" : "Hiện"}
           </small>
         </div>
       </div>
 
       <div className="form-group mb-3">
         <label htmlFor="password" className="form-label">
-          Confirm Password
+          Xác nhận mật khẩu
         </label>
 
         <div className="pass">
@@ -94,17 +94,17 @@ const RegisterForm = () => {
             name="cf_password"
             value={cf_password}
             onChange={handleChangeInput}
-            placeholder="Your confirm password."
+            placeholder="Xác nhận lại mật khẩu của bạn."
           />
 
           <small onClick={() => setTypeCfPass(!typeCfPass)}>
-            {typeCfPass ? "Hide" : "Show"}
+            {typeCfPass ? "Ẩn" : "Hiện"}
           </small>
         </div>
       </div>
 
       <button type="submit" className="btn btn-primary w-100 my-1">
-        Register
+        Đăng ký
       </button>
     </form>
   );
