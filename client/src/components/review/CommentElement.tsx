@@ -3,13 +3,19 @@ import { IComment } from "../../utils/TypeScript";
 import { useState, useEffect } from "react";
 import { Reaction } from "../../utils/enum";
 import { io, Socket } from 'socket.io-client';
+import { getAccessToken, getUID } from '../../utils/cookies';
 interface IProps {
   comment: IComment;
 }
 
-const socket: Socket = io(process.env.REACT_APP_SOCKET_URL as string)
+const socket: Socket = io(process.env.REACT_APP_SOCKET_URL as string, {
+  auth: {
+    token: getAccessToken()
+  }
+})
 
 function CommentElement(props: IProps) {
+  const uid = getUID() // user id
   const [clientReaction, setClientReaction] = useState(Reaction.Null);
   const [reactionCount, setReactionCount] = useState<{likes: number, dislikes: number}>({
     likes: 0,
@@ -18,9 +24,11 @@ function CommentElement(props: IProps) {
 
   useEffect(() => {
     socket.on('comment-reacted', (data) => {
-      const { _id, likes, dislikes, reaction } = data
+      const { _id, likes, dislikes, reaction, userId } = data
       if (props.comment._id === _id) {
         setReactionCount({likes, dislikes})
+      }
+      if (uid && userId && uid == userId) {
         setClientReaction(reaction)
       }
     })
