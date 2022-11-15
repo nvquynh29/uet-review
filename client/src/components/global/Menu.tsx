@@ -46,7 +46,7 @@ const Menu = () => {
             <img src={avatar} alt="avatar" className="avatar" />
           </span>
 
-          <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
+          <ul className="dropdown-menu" aria-labelledby="navbarDropdown" style={{position: 'absolute', transform: 'translate(-90px, 0)'}}>
             <li>
               <Link className="dropdown-item"
                 to={`/profile`}
