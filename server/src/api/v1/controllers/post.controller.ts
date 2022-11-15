@@ -89,7 +89,7 @@ const getListPost = async (req: Request, res: Response, next: NextFunction) => {
 const commentPost = async (req: Request, res: Response) => {
   try {
     const { id } = req.params
-    const { _id, role } = res.locals.user
+    const { _id, nickname } = res.locals.user
     const post = await Post.find({ _id: id })
     if (post) {
       const { content } = req.body
@@ -105,7 +105,7 @@ const commentPost = async (req: Request, res: Response) => {
       const newComment = await Comment.create(comment)
       const data = {
         ...newComment.toJSON(),
-        author: 'Đỗ Tiến Đạt',
+        author: nickname,
       }
       return res.json({ data })
     }

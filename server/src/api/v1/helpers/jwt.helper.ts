@@ -22,6 +22,7 @@ const verifyToken = (token: string, secretSignature: string, options: jwt.Verify
     })
   })
 
+// TODO: handle JsonWebTokenError: jwt must be provided, expires
 const extractTokenInfo = (token: string, options?: jwt.VerifyOptions) => {
   const secretSignature = process.env.ACCESS_TOKEN_SECRET
   try {
@@ -29,7 +30,7 @@ const extractTokenInfo = (token: string, options?: jwt.VerifyOptions) => {
     return data as UserInfo
   } catch (error) {
     console.log(error)
-    return null
+    throw error
   }
 }
 

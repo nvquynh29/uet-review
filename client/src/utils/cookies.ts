@@ -10,4 +10,9 @@ const getAccessToken = () => {
   return getCookie('accessToken')
 }
 
-export { getCookie, getAccessToken }
+// TODO: Using redux
+const getUID = () => {
+  return getCookie('_id')
+}
+
+export { getCookie, getAccessToken, getUID }

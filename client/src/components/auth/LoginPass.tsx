@@ -18,8 +18,12 @@ const LoginPass = () => {
     setUserLogin({ ...userLogin, [name]: value });
   };
 
-  const writeCookies = (accessToken: string, refreshToken: string) => {
+  const writeCookies = (accessToken: string, refreshToken: string, _id: string) => {
     cookies.set('accessToken', accessToken, { 
+        path: '/', 
+        maxAge: 24 * 60 * 60, // 1d
+       })
+    cookies.set('_id', _id, { 
         path: '/', 
         maxAge: 24 * 60 * 60, // 1d
        })
@@ -33,11 +37,11 @@ const LoginPass = () => {
 
   const handleSubmit = async (e: FormSubmit) => {
     e.preventDefault();
-    const { accessToken, refreshToken } = await login({
+    const { accessToken, refreshToken, _id } = await login({
       email: userLogin.account,
       password: userLogin.password,
     } as ICredential)
-    writeCookies(accessToken, refreshToken)
+    writeCookies(accessToken, refreshToken, _id)
     history.push('/')
   };
 
