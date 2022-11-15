@@ -6,7 +6,7 @@ import { getPostBySlug } from "../../api/post";
 import CommentElement from "../../components/review/CommentElement";
 import CommentForm from "../../components/review/CommentForm";
 import avatar from "../../images/avatar.png";
-import { getAccessToken } from "../../utils/cookies";
+import { getAccessToken, getUID } from "../../utils/cookies";
 import { Reaction } from "../../utils/enum";
 import { IComment, IParams } from "../../utils/TypeScript";
 import { lecturers, subjects } from "../create_review";
@@ -52,6 +52,7 @@ const socket: Socket = io(process.env.REACT_APP_SOCKET_URL as string, {
 });
 
 const DetailReview = () => {
+  const uid = getUID();
   const slug = useParams<IParams>().slug;
   const [postData, setPostData] = useState<PostData>();
   // TODO: Refactor using T & { type: ReactionType }
@@ -69,9 +70,11 @@ const DetailReview = () => {
 
   useEffect(() => {
     socket.on("post-reacted", (data) => {
-      const { likes, dislikes, reaction } = data;
+      const { likes, dislikes, reaction, userId } = data;
       setReactionCount({ likes, dislikes });
-      setClientReaction(reaction);
+      if (uid && userId && uid == userId) {
+        setClientReaction(reaction);
+      }
     });
 
     // return () => {

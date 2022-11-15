@@ -46,7 +46,7 @@ const Home = () => {
 
   return (
     <>
-      <div className="list-post mt-4">
+      <div className="list-post mt-4 px-4">
         {posts?.map((item) => (
           <div
             key={item.post._id}

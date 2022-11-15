@@ -28,37 +28,38 @@ const Pagination: React.FC<IProps> = ({total}) => {
 
   return (
     <nav aria-label="Page navigation example" style={{cursor: 'pointer'}}>
-      <ul className="pagination">
-        {
-          page > 1 && 
-          <li className="page-item" 
-          onClick={() => handlePagination(page - 1)}>
-            <span className="page-link" aria-label="Previous">
-              <span aria-hidden="true">&laquo;</span>
-            </span>
-          </li>
-        }
-        
-
-        {
-          newArr.map(num => (
-            <li key={num} className={`page-item ${isActive(num)}`}
-            onClick={() => handlePagination(num)}>
-              <span className="page-link">{num}</span>
+      <div className="p-4">
+        <ul className="pagination">
+          {
+            page > 1 &&
+            <li className="page-item"
+            onClick={() => handlePagination(page - 1)}>
+              <span className="page-link" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+              </span>
             </li>
-          ))
-        }
+          }
         
-        {
-          page < total &&
-          <li className="page-item"
-          onClick={() => handlePagination(page + 1)}>
-            <span className="page-link" aria-label="Next">
-              <span aria-hidden="true">&raquo;</span>
-            </span>
-          </li>
-        }
-      </ul>
+          {
+            newArr.map(num => (
+              <li key={num} className={`page-item ${isActive(num)}`}
+              onClick={() => handlePagination(num)}>
+                <span className="page-link">{num}</span>
+              </li>
+            ))
+          }
+        
+          {
+            page < total &&
+            <li className="page-item"
+            onClick={() => handlePagination(page + 1)}>
+              <span className="page-link" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+              </span>
+            </li>
+          }
+        </ul>
+      </div>
     </nav>
   )
 }

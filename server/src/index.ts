@@ -30,8 +30,14 @@ io.on('connection', (socket) => {
 
   socket.on('react-comment', async (data) => {
     console.log(data)
-    const { _id, code } = data
-    const res = await reactComment(userId, _id, code)
-    io.emit('comment-reacted', res)
+    const accessToken = socket.handshake.auth.token
+    try {
+      const userInfo = <UserInfo>jwtHelper.extractTokenInfo(accessToken as string)
+      const { _id, code } = data
+      const res = await reactComment(userInfo._id, _id, code)
+      io.emit('comment-reacted', res)
+    } catch (error) {
+      console.log(error)
+    }
   })
 })

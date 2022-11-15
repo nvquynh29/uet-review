@@ -2,7 +2,7 @@ import { Types } from 'mongoose'
 import Comment from '../models/comment.model'
 import Post from '../models/post.model'
 import Reaction, { IReaction } from '../models/reaction.model'
-import { ReactionTypes } from '../types'
+import { MongooseID, ReactionTypes } from '../types'
 
 const reactPost = async (userId: string, slug: string, type: ReactionTypes) => {
   const reaction = await Reaction.findOne({ user_id: userId, slug })
@@ -26,10 +26,10 @@ const reactPost = async (userId: string, slug: string, type: ReactionTypes) => {
   
   // update reaction count
   await Post.findOneAndUpdate({ slug }, { likes, dislikes })
-  return { likes, dislikes, reaction: reactionType }
+  return { likes, dislikes, reaction: reactionType, userId }
 }
 
-const reactComment = async (userId: string, commentId: string, type: ReactionTypes) => {
+const reactComment = async (userId: MongooseID, commentId: string, type: ReactionTypes) => {
   const reaction = await Reaction.findOne({ user_id: userId, comment_id: commentId })
   if (reaction) {
     if (reaction.type == type) {
@@ -49,7 +49,7 @@ const reactComment = async (userId: string, commentId: string, type: ReactionTyp
   const { likes, dislikes } = await getCommentReactionCount(commentId)
   const reactionType = await getCommentReactionType(userId, commentId)
   await Comment.findOneAndUpdate({ _id: commentId }, { likes, dislikes })
-  return { likes, dislikes, _id: commentId, reaction: reactionType }
+  return { likes, dislikes, _id: commentId, reaction: reactionType, userId }
 }
 
 const getPostReactionCount = async (slug: string) => {
@@ -59,7 +59,7 @@ const getPostReactionCount = async (slug: string) => {
   return { likes, dislikes }
 }
 
-const getCommentReactionCount = async (commentId: string) => {
+const getCommentReactionCount = async (commentId: MongooseID) => {
   const reactionCount = await Reaction.find({ comment_id: commentId }).countDocuments()
   const likes = await Reaction.find({
     comment_id: commentId,
@@ -77,7 +77,7 @@ const getPostReactionType = async (userId: string, slug: string) => {
   return ReactionTypes.NONE
 }
 
-const getCommentReactionType = async (userId: string, commentId: string) => {
+const getCommentReactionType = async (userId: MongooseID, commentId: string) => {
   const reaction = await Reaction.findOne({ user_id: userId, comment_id: commentId })
   if (reaction) {
     return reaction.type
