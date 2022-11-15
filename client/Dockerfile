@@ -1,5 +1,8 @@
 FROM node:16-alpine as builder
 
+ARG REACT_APP_API_URL
+ARG REACT_APP_SOCKET_URL
+
 RUN mkdir /app
 
 COPY ./package.json /app

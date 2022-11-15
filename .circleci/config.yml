@@ -14,7 +14,11 @@ jobs:
       - checkout
       - run:
           name: Build docker image
-          command: cd ~/uet-review/client && docker build -t $DOCKER_IMAGE:$DOCKER_TAG .
+          command: |
+            cd ~/uet-review/client && docker build \
+            --build-arg REACT_APP_API_URL=${REACT_APP_API_URL} \
+            --build-arg REACT_APP_SOCKET_URL=${REACT_APP_SOCKET_URL} \
+            -t $DOCKER_IMAGE:$DOCKER_TAG .
       - run:
           name: Push image to docker hub
           command: |
@@ -31,7 +35,8 @@ jobs:
       - checkout
       - run:
           name: Build docker image
-          command: cd ~/uet-review/server && docker build -t $DOCKER_IMAGE:$DOCKER_TAG .
+          command: |
+            cd ~/uet-review/server && docker build -t $DOCKER_IMAGE:$DOCKER_TAG .
       - run:
           name: Push image to docker hub
           command: |

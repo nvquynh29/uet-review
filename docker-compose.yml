@@ -4,7 +4,6 @@ services:
     image: mailnophone03/uet-review-frontend
     ports:
       - 3000:80
-    env_file: ./client/.env
     depends_on:
       - api
   api:
