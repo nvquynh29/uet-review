@@ -1,15 +1,15 @@
-import { useEffect, useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-import { IParams, IComment } from "../../utils/TypeScript";
-import { Reaction } from "../../utils/enum";
-import avatar from "../../images/avatar.png";
-import CommentElement from "../../components/review/CommentElement";
+import { io, Socket } from "socket.io-client";
 import { getPostBySlug } from "../../api/post";
-import { lecturers, subjects } from "../create_review";
+import CommentElement from "../../components/review/CommentElement";
 import CommentForm from "../../components/review/CommentForm";
-import { io, Socket } from 'socket.io-client';
-import { getAccessToken, getUID } from '../../utils/cookies';
+import avatar from "../../images/avatar.png";
+import { getAccessToken, getUID } from "../../utils/cookies";
+import { Reaction } from "../../utils/enum";
+import { IComment, IParams } from "../../utils/TypeScript";
+import { lecturers, subjects } from "../create_review";
 
 export interface Author {
   nickname: string;
@@ -39,45 +39,48 @@ export interface Review {
 }
 
 export type PostData = {
-    post: Post;
-    author: Author;
-    comments: IComment[];
-    reaction: number;  // reaction type
-}
+  post: Post;
+  author: Author;
+  comments: IComment[];
+  reaction: number; // reaction type
+};
 
 const socket: Socket = io(process.env.REACT_APP_SOCKET_URL as string, {
   auth: {
-    token: getAccessToken()
-  }
-})
+    token: getAccessToken(),
+  },
+});
 
 const DetailReview = () => {
-  const uid = getUID()
+  const uid = getUID();
   const slug = useParams<IParams>().slug;
   const [postData, setPostData] = useState<PostData>();
   // TODO: Refactor using T & { type: ReactionType }
-  const [reactionCount, setReactionCount] = useState<{likes: number, dislikes: number}>({
+  const [reactionCount, setReactionCount] = useState<{
+    likes: number;
+    dislikes: number;
+  }>({
     likes: 0,
     dislikes: 0,
-  })
+  });
 
   useEffect(() => {
     fetchPost();
   }, []);
 
   useEffect(() => {
-    socket.on('post-reacted', (data) => {
-      const { likes, dislikes, reaction, userId } = data
-      setReactionCount({likes, dislikes})
+    socket.on("post-reacted", (data) => {
+      const { likes, dislikes, reaction, userId } = data;
+      setReactionCount({ likes, dislikes });
       if (uid && userId && uid == userId) {
-        setClientReaction(reaction)
+        setClientReaction(reaction);
       }
-    })
+    });
 
     // return () => {
     //   socket.disconnect()
     // }
-  }, [])
+  }, []);
 
   const fetchPost = useCallback(async () => {
     try {
@@ -86,19 +89,19 @@ const DetailReview = () => {
       setReactionCount({
         likes: data.post.likes as number,
         dislikes: data.post.dislikes as number,
-      })
-      setClientReaction(data.reaction)
+      });
+      setClientReaction(data.reaction);
     } catch (error) {
       console.log(error);
     }
   }, []);
 
   const reactPost = async (reactionCode: Reaction) => {
-    socket.emit('react-post', {
+    socket.emit("react-post", {
       slug,
       code: reactionCode,
-    })
-  }
+    });
+  };
 
   const selected = postData?.post.lecturer_id ? "lecturer" : "subject";
 
@@ -113,24 +116,24 @@ const DetailReview = () => {
         setClientReaction(reactionCode);
         break;
     }
-    reactPost(reactionCode)
+    reactPost(reactionCode);
   };
 
   const updateComment = (comment: IComment) => {
-    setPostData(prev => {
-      const newComments: IComment[] = []
-      prev?.comments.forEach(item => {
-        newComments.push(item)
+    setPostData((prev) => {
+      const newComments: IComment[] = [];
+      prev?.comments.forEach((item) => {
+        newComments.push(item);
       });
 
-      newComments.push(comment)
+      newComments.push(comment);
       return {
         post: prev?.post,
         author: prev?.author,
         comments: newComments,
-      } as PostData
-    })
-  }
+      } as PostData;
+    });
+  };
 
   return (
     <div className="my-4 detail_review">
@@ -180,11 +183,11 @@ const DetailReview = () => {
         </div>
       </div>
 
-      <div className="row mt-4 justify-content-center">
-        <div className="col-md-2">
+      <div className="row my-4 justify-content-md-center">
+        <div className="col-4">
           <p className="post-label reviewObject">Đối tượng Review</p>
         </div>
-        <div className="col-md-4">
+        <div className="col-5">
           <p className="labelContent reviewObject">
             {selected === "lecturer"
               ? lecturers.find(
@@ -210,7 +213,7 @@ const DetailReview = () => {
       ))}
 
       <div className="row mt-4">
-        <div className="row mt-4">
+        <div className="row">
           <div className="form-group">
             <p className="post-label" style={{ width: "13rem" }}>
               Đánh giá khác
@@ -231,7 +234,10 @@ const DetailReview = () => {
         <CommentElement comment={item} />
       ))}
 
-      <CommentForm id={postData ? postData.post._id : ""} updateComments={updateComment} />
+      <CommentForm
+        id={postData ? postData.post._id : ""}
+        updateComments={updateComment}
+      />
     </div>
   );
 };
