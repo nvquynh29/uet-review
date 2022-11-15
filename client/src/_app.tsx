@@ -7,7 +7,7 @@ import Header from './components/global/Header'
 
 const App = () => {
   return (
-    <div className="container-fluid">
+    <div className="main-container">
       <Router>
         <Header />
 

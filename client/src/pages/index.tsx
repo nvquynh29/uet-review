@@ -49,7 +49,7 @@ const Home = () => {
 
   return (
     <>
-      <div className="list-post mt-4">
+      <div className="list-post mt-4 px-4">
         {posts?.map(item => (
           <div key={item.post._id} className="card mb-3" style={{ minWidth: "260px" }}>
             <div className="row g-0 p-2">
