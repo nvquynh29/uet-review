@@ -16,10 +16,10 @@ const socket: Socket = io(process.env.REACT_APP_SOCKET_URL as string, {
 
 function CommentElement(props: IProps) {
   const uid = getUID() // user id
-  const [clientReaction, setClientReaction] = useState(Reaction.Null);
+  const [clientReaction, setClientReaction] = useState(props.comment.type);
   const [reactionCount, setReactionCount] = useState<{likes: number, dislikes: number}>({
-    likes: 0,
-    dislikes: 0,
+    likes: props.comment.likes,
+    dislikes: props.comment.dislikes,
   })
 
   useEffect(() => {
@@ -27,9 +27,9 @@ function CommentElement(props: IProps) {
       const { _id, likes, dislikes, reaction, userId } = data
       if (props.comment._id === _id) {
         setReactionCount({likes, dislikes})
-      }
-      if (uid && userId && uid == userId) {
-        setClientReaction(reaction)
+        if (uid && userId && uid == userId) {
+          setClientReaction(reaction)
+        }
       }
     })
 

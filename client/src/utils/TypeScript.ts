@@ -41,14 +41,15 @@ export interface IReview {
   createdAt: string
 }
 export interface IComment {
-  _id: string
-  author_id: string
+  _id?: string
+  author_id?: string
   post_id: string
   content: string
   likes: number
   dislikes: number
   created_at: string
   updated_at: string
+  type?: number
 }
 
 export interface ICredential {

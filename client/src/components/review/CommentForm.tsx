@@ -28,12 +28,9 @@ function CommentForm(props: IProps) {
   const handleSubmit = async (e: FormSubmit) => {
     e.preventDefault();
     try {
-      // TODO: Update using real information
       const comment: IComment = {
-        _id: props.id,
-        author_id: '12334444',
-          post_id: '11111',  
-          content: content,
+        post_id: props.id,
+        content: content,
         likes: 0,
         dislikes: 0,
         created_at: Date.now().toLocaleString(),

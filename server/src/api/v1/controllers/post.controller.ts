@@ -1,17 +1,28 @@
-import { NextFunction, Request, Response } from 'express'
+import { NextFunction, Request, response, Response } from 'express'
 import { Types } from 'mongoose'
 import Post, { IPost, IReview } from '../models/post.model'
 import { generateSlug } from '../../../pkg/slugify'
-import { IPagination, userId } from '../types'
+import {
+  Author,
+  ICommentResp,
+  IPagination,
+  MongooseID,
+  Reaction,
+  ReactionTypes,
+  userId,
+  UserInfo,
+} from '../types'
 import Comment, { IComment } from '../models/comment.model'
-import { getPostReactionType } from '../services/reaction.service'
+import { getCommentReactionType, getPostReactionType } from '../services/reaction.service'
+import { jwtHelper } from '../helpers/jwt.helper'
 
 const createPost = async (req: Request, res: Response) => {
   const body = req.body
   const subjectId = body.subject != '' ? new Types.ObjectId(body.subject) : undefined
   const lecturerId = body.lecturer != '' ? new Types.ObjectId(body.lecturer) : undefined
+  const { _id } = res.locals.user
   const post: IPost = {
-    author_id: new Types.ObjectId(body.user),
+    author_id: _id,
     subject_id: subjectId,
     lecturer_id: lecturerId,
     title: body.title,
@@ -35,21 +46,61 @@ const createPost = async (req: Request, res: Response) => {
 
 const getPost = async (req: Request, res: Response) => {
   const { slug } = req.params
+  // TODO: Implement guest middleware
   const post = await Post.findOne({ slug })
+    .populate({
+      path: 'author_id',
+      select: {
+        _id: 1,
+        nickname: 1,
+        email: 1,
+      },
+    })
+    .exec()
   if (post == null) {
     return res.sendStatus(404)
   }
 
-  const comments = await Comment.find({ post_id: post._id })
   // TODO: Using middleware
-  const currentUserId = userId
+  let currentUserId: MongooseID = userId
+  const accessToken = <string>(req.headers['X-ACCESS-TOKEN'] || req.headers['x-access-token'])
+  try {
+    const { _id } = <UserInfo>jwtHelper.extractTokenInfo(accessToken)
+    currentUserId = _id
+  } catch (error) {
+    currentUserId = userId
+  }
   const reaction = await getPostReactionType(currentUserId, slug)
+  const comments = await Comment.find({ post_id: post._id })
 
-  const author = {
+  const commentResp: ICommentResp[] = []
+  for (let i = 0; i < comments.length; i++) {
+    const comment = comments[i]
+    let reaction: Reaction = {
+      type: ReactionTypes.NONE,
+    }
+    if (currentUserId != userId) {
+      const reactionType = await getCommentReactionType(currentUserId, comment._id)
+      reaction = {
+        type: reactionType,
+      }
+    }
+
+    commentResp.push(<ICommentResp>{
+      ...comment.toJSON(),
+      type: reaction.type,
+    })
+  }
+
+  let author = <Author>{
     nickname: 'Trịnh Mai Huy',
     email: 'trinh.mai.huy@gmail.com',
   }
-  return res.json({ data: { post, author, comments, reaction } })
+  if (post.author_id != null) {
+    author = post.author_id as Author
+  }
+
+  return res.json({ data: { post, author, comments: commentResp, reaction } })
 }
 
 const getListPost = async (req: Request, res: Response, next: NextFunction) => {
@@ -70,6 +121,7 @@ const getListPost = async (req: Request, res: Response, next: NextFunction) => {
     const data: any = []
     // TODO: Use real data
     const author = {
+      _id: userId,
       nickname: 'Trịnh Mai Huy',
       email: 'trinh.mai.huy@gmail.com',
     }

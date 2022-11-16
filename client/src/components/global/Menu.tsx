@@ -1,10 +1,12 @@
 import React from 'react'
-import { Link, useLocation } from 'react-router-dom'
-import { getAccessToken } from '../../utils/cookies'
+import { Link, useHistory, useLocation } from 'react-router-dom'
+import { clearCookies, getAccessToken } from '../../utils/cookies'
 import avatar from "../../images/avatar.png";
+import { logout } from '../../api/auth';
 
 
 const Menu = () => {
+  const history = useHistory()
   const access_token = getAccessToken()
   const { pathname } = useLocation()
 
@@ -23,9 +25,16 @@ const Menu = () => {
     if (pn === pathname) return 'active';
   }
 
-  const handleLogout = () => {
-    if (!access_token) return;
-    console.log("Log out:" + access_token)
+  const handleLogout = async () => {
+    try {
+      await logout()
+      clearCookies('_id')
+      clearCookies('accessToken')
+      clearCookies('refreshToken')
+      history.push('/')
+    } catch (error) {
+      console.log(error)
+    }
   }
 
 
