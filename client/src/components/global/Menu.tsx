@@ -1,14 +1,17 @@
-import React from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Link, useHistory, useLocation } from 'react-router-dom'
 import { clearCookies, getAccessToken } from '../../utils/cookies'
 import avatar from "../../images/avatar.png";
 import { logout } from '../../api/auth';
+import { getProfile } from '../../api/profile';
+import { ICredential } from '../../utils/TypeScript';
 
 
 const Menu = () => {
   const history = useHistory()
   const access_token = getAccessToken()
   const { pathname } = useLocation()
+  const [name, setName] = useState("");
 
   const bfLoginLinks = [
     { label: 'Đăng nhập', path: '/login' },
@@ -24,6 +27,21 @@ const Menu = () => {
   const isActive = (pn: string) => {
     if (pn === pathname) return 'active';
   }
+
+  useEffect(() => {
+    fetchProfile();
+  }, [name, access_token]);
+
+  const fetchProfile = useCallback(async () => {
+    try {
+      if (access_token) {
+        const { data } = await getProfile();
+        setName(data.nickname)
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -53,9 +71,12 @@ const Menu = () => {
         <li className="nav-item dropdown">
           <span className="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             <img src={avatar} alt="avatar" className="avatar" />
+            <small className="text-muted">
+              {name}
+            </small>
           </span>
 
-          <ul className="dropdown-menu" aria-labelledby="navbarDropdown" style={{position: 'absolute', transform: 'translate(-90px, 0)'}}>
+          <ul className="dropdown-menu" aria-labelledby="navbarDropdown" style={{ position: 'absolute', transform: 'translate(0, 0)' }}>
             <li>
               <Link className="dropdown-item"
                 to={`/profile`}
