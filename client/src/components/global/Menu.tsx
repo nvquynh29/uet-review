@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { Link, useHistory, useLocation } from 'react-router-dom'
-import { clearCookies, getAccessToken } from '../../utils/cookies'
+import { clearCookies, getAccessToken, getCookie } from '../../utils/cookies'
 import avatar from "../../images/avatar.png";
 import { logout } from '../../api/auth';
 import { getProfile } from '../../api/profile';
@@ -29,19 +29,23 @@ const Menu = () => {
   }
 
   useEffect(() => {
-    fetchProfile();
+    const nickname = getCookie('nickname')
+    if (nickname) {
+      setName(nickname)
+    }
+    // fetchProfile();
   }, [name, access_token]);
 
-  const fetchProfile = useCallback(async () => {
-    try {
-      if (access_token) {
-        const { data } = await getProfile();
-        setName(data.nickname)
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }, []);
+  // const fetchProfile = useCallback(async () => {
+  //   try {
+  //     if (access_token) {
+  //       const { data } = await getProfile();
+  //       setName(data.nickname)
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }, []);
 
   const handleLogout = async () => {
     try {
@@ -49,6 +53,7 @@ const Menu = () => {
       clearCookies('_id')
       clearCookies('accessToken')
       clearCookies('refreshToken')
+      clearCookies('nickname')
       history.push('/')
     } catch (error) {
       console.log(error)

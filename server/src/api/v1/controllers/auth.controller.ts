@@ -37,7 +37,7 @@ const login = async (req: Request, res: Response) => {
         '30d'
       )
       updateRefreshToken(user._id, refreshToken as string)
-      return res.status(200).json({ accessToken, refreshToken, role: user.role, _id: user._id })
+      return res.status(200).json({ accessToken, refreshToken, role: user.role, _id: user._id, nickname: user.nickname })
     }
     return res.status(401).json({ error: 'Invalid credential' })
   } catch (error) {
