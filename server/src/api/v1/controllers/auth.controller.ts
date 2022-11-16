@@ -105,4 +105,15 @@ const refreshToken = async (req: Request, res: Response) => {
   }
 }
 
-export { login, signup, refreshToken }
+const logout = async (req: Request, res: Response) => {
+  const { _id } = res.locals.user
+  try {
+    await User.findByIdAndUpdate({ _id }, { refreshToken: undefined })
+    return res.sendStatus(200)
+  } catch (error) {
+    console.log(error)
+    return res.sendStatus(500)
+  }
+}
+
+export { login, signup, logout, refreshToken }

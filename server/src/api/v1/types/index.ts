@@ -1,5 +1,6 @@
 import { JwtPayload } from 'jsonwebtoken'
 import { Types } from 'mongoose'
+import { IComment } from '../models/comment.model'
 
 export interface IPagination {
   page: number
@@ -8,12 +9,25 @@ export interface IPagination {
   total_page?: number
 }
 
+// Types
+export type Reaction = {
+  type: ReactionTypes
+}
+
+export type ICommentResp = IComment & Reaction
+
 export type MongooseID = string | Types.ObjectId
 
 export type UserInfo = {
   _id: MongooseID
   role: string
   nickname: string
+}
+
+export type Author = {
+  _id: MongooseID
+  nickname: string
+  email: string
 }
 
 // Enum

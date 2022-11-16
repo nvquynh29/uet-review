@@ -23,7 +23,7 @@ const reactPost = async (userId: string, slug: string, type: ReactionTypes) => {
   }
   const { likes, dislikes } = await getPostReactionCount(slug)
   const reactionType = await getPostReactionType(userId, slug)
-  
+
   // update reaction count
   await Post.findOneAndUpdate({ slug }, { likes, dislikes })
   return { likes, dislikes, reaction: reactionType, userId }
@@ -69,7 +69,7 @@ const getCommentReactionCount = async (commentId: MongooseID) => {
   return { likes, dislikes }
 }
 
-const getPostReactionType = async (userId: string, slug: string) => {
+const getPostReactionType = async (userId: MongooseID, slug: string) => {
   const reaction = await Reaction.findOne({ user_id: userId, slug })
   if (reaction) {
     return reaction.type
@@ -77,7 +77,7 @@ const getPostReactionType = async (userId: string, slug: string) => {
   return ReactionTypes.NONE
 }
 
-const getCommentReactionType = async (userId: MongooseID, commentId: string) => {
+const getCommentReactionType = async (userId: MongooseID, commentId: MongooseID) => {
   const reaction = await Reaction.findOne({ user_id: userId, comment_id: commentId })
   if (reaction) {
     return reaction.type
@@ -85,4 +85,4 @@ const getCommentReactionType = async (userId: MongooseID, commentId: string) => 
   return ReactionTypes.NONE
 }
 
-export { reactPost, reactComment, getPostReactionType }
+export { reactPost, reactComment, getPostReactionType, getCommentReactionType }
