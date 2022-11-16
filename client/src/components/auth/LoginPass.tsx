@@ -18,14 +18,18 @@ const LoginPass = () => {
     setUserLogin({ ...userLogin, [name]: value });
   };
 
-  const writeCookies = (accessToken: string, refreshToken: string, _id: string) => {
+  const writeCookies = (accessToken: string, refreshToken: string, _id: string, nickname: string) => {
     cookies.set('accessToken', accessToken, { 
         path: '/', 
         maxAge: 24 * 60 * 60, // 1d
        })
     cookies.set('_id', _id, { 
         path: '/', 
-        maxAge: 24 * 60 * 60, // 1d
+        maxAge: 24 * 60 * 60,
+       })
+    cookies.set('nickname', nickname, { 
+        path: '/', 
+        maxAge: 24 * 60 * 60,
        })
     if (refreshToken) {
       cookies.set('refreshToken', refreshToken, { 
@@ -37,11 +41,11 @@ const LoginPass = () => {
 
   const handleSubmit = async (e: FormSubmit) => {
     e.preventDefault();
-    const { accessToken, refreshToken, _id } = await login({
+    const { accessToken, refreshToken, _id, nickname } = await login({
       email: userLogin.account,
       password: userLogin.password,
     } as ICredential)
-    writeCookies(accessToken, refreshToken, _id)
+    writeCookies(accessToken, refreshToken, _id, nickname)
     history.push('/')
   };
 

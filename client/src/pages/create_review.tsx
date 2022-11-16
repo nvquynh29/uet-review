@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useHistory } from 'react-router-dom';
 import { createPost } from "../api/post";
 import { InputChange } from "../utils/TypeScript";
 
@@ -10,22 +11,66 @@ interface IReviews {
 export const lecturers = [
   {
     id: "636125870f506d29b2baf95b",
-    name: "Nguyễn Văn A",
+    name: "Cô Hoàng Thị Điệp",
   },
   {
     id: "636bd02740ad3c2d5ec24745",
-    name: "Nguyễn Văn B",
+    name: "Thầy Trần Trọng Hiếu",
+  },
+  {
+    id: "6375046e2484da41acb4e87c",
+    name: "Thầy Lê Phê Đô",
+  },
+  {
+    id: "6375047cabc7a65b070f6588",
+    name: "Thầy Bùi Quang Hưng",
+  },
+  {
+    id: "63750483aeb36e8767480940",
+    name: "Cô Trần Thị Thu Trang",
+  },
+  {
+    id: "6375048c9d86d6c585e117a2",
+    name: "Cô Vũ Thị Hồng Nhạn",
+  },
+  {
+    id: "6375049246e1eef3789f9caa",
+    name: "Cô Nguyễn Thu Trang",
   },
 ];
 
 export const subjects = [
   {
-    id: "636bd0339425e8b0541143e6",
+    id: "63750496becdfd83afc3114b",
     name: "Giải tích 1",
   },
   {
-    id: "636bd045e5a6502db4b75665",
+    id: "6375049a132a16dbae03b9ed",
     name: "Giải tích 2",
+  },
+  {
+    id: "637504a02ac879e6ed14d180",
+    name: "Vật lý đại cương 1",
+  },
+  {
+    id: "637504a4e1d11cf2acabd8be",
+    name: "Vật lý đại cương 2",
+  },
+  {
+    id: "637504a92186c02f0915fd1f",
+    name: "Tín hiệu và hệ thống",
+  },
+  {
+    id: "637504ad8d1d06f832161190",
+    name: "Cấu trúc dữ liệu và giải thuật",
+  },
+  {
+    id: "637504b0ef839748b84b87fd",
+    name: "Cơ sở dữ liệu",
+  },
+  {
+    id: "637504b5b714c16723fee36b",
+    name: "Triết học Mac-Lenin",
   },
 ];
 
@@ -46,6 +91,7 @@ const subjectReviews = [
 ];
 
 const CreateReview = () => {
+  const history = useHistory()
   const initState = {
     user: "636183710f506d29b2baf95b",
     title: "",
@@ -190,6 +236,7 @@ const CreateReview = () => {
   const onCreatePost = async (post: object) => {
     try {
       const { data } = await createPost(post);
+      history.push('/')
       console.log(data);
     } catch (error) {
       console.log(error);
