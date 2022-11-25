@@ -5,9 +5,10 @@ import { io, Socket } from "socket.io-client";
 import { getPostBySlug } from "../../api/post";
 import CommentElement from "../../components/review/CommentElement";
 import CommentForm from "../../components/review/CommentForm";
+import ReportModal from "../../components/review/ReportModal";
 import avatar from "../../images/avatar.png";
 import { getAccessToken, getUID } from "../../utils/cookies";
-import { Reaction } from "../../utils/enum";
+import { Reaction, ReportType } from "../../utils/enum";
 import { IComment, IParams } from "../../utils/TypeScript";
 import { lecturers, subjects } from "../create_review";
 
@@ -135,17 +136,26 @@ const DetailReview = () => {
     });
   };
 
+  const [isReportModalShow, setReportModalShow] = useState(false);
+  const invokeReportModal = () => {
+    setReportModalShow(!isReportModalShow);
+    console.log(isReportModalShow);
+  };
+
+  const [isReported, setReported] = useState(false);
+
   return (
     <div className="my-4 detail_review">
+      <ReportModal
+        reportType={ReportType.Review}
+        isShow={isReportModalShow}
+        invokeModal={invokeReportModal}
+        setReported={setReported}
+      />
+
       <div className="row mt-4 align-items-center postInfo">
-        <div className="col-7">
-          <h2>Review by {postData?.author.nickname}</h2>
-        </div>
-        <div className="col-2 d-flex justify-content-end align-self-center">
-          <img src={avatar} alt="avatar" className="avatar"></img>
-          <p className="date" style={{ margin: "auto" }}>
-            {new Date().toLocaleDateString("vi")}
-          </p>
+        <div className="col-9">
+          <h2>{postData?.post.title}</h2>
         </div>
         <div className="col-3 reactionContainer">
           <button
@@ -180,6 +190,30 @@ const DetailReview = () => {
             ></i>
             <span>{reactionCount.dislikes}</span>
           </button>
+          <button className="reactionButton" id="reportButton">
+            <i
+              className={
+                "bi " + (isReported === true ? "bi-flag-fill" : "bi-flag")
+              }
+              style={isReported ? { color: "#cc3300" } : { color: "black" }}
+              onClick={invokeReportModal}
+            ></i>
+          </button>
+        </div>
+      </div>
+      <div className="row align-items-center postInfo">
+        <div className="col-4 d-flex justify-content-start">
+          <p className="date" style={{ margin: "auto 0" }}>
+            Review by {postData?.author.nickname}
+          </p>
+          <img src={avatar} alt="avatar" className="avatar"></img>
+        </div>
+        <div className="col-8 d-flex justify-content-end">
+          <p className="date" style={{ margin: "auto 0" }}>
+            {new Date(
+              postData ? postData.post.created_at : "Date error"
+            ).toLocaleString()}
+          </p>
         </div>
       </div>
 

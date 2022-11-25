@@ -3,3 +3,8 @@ export enum Reaction {
   Dislike,
   Like,
 }
+
+export enum ReportType {
+  Review,
+  Comment,
+}
