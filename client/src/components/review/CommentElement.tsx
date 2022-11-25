@@ -1,42 +1,53 @@
+import { useEffect, useState } from "react";
+import { io, Socket } from "socket.io-client";
 import avatar from "../../images/avatar.png";
+import { getAccessToken, getUID } from "../../utils/cookies";
+import { Reaction, ReportType } from "../../utils/enum";
 import { IComment } from "../../utils/TypeScript";
-import { useState, useEffect } from "react";
-import { Reaction } from "../../utils/enum";
-import { io, Socket } from 'socket.io-client';
-import { getAccessToken, getUID } from '../../utils/cookies';
+import ReportModal from "./ReportModal";
 interface IProps {
   comment: IComment;
 }
 
 const socket: Socket = io(process.env.REACT_APP_SOCKET_URL as string, {
   auth: {
-    token: getAccessToken()
-  }
-})
+    token: getAccessToken(),
+  },
+});
 
 function CommentElement(props: IProps) {
-  const uid = getUID() // user id
+  const uid = getUID(); // user id
   const [clientReaction, setClientReaction] = useState(props.comment.type);
-  const [reactionCount, setReactionCount] = useState<{likes: number, dislikes: number}>({
+  const [reactionCount, setReactionCount] = useState<{
+    likes: number;
+    dislikes: number;
+  }>({
     likes: props.comment.likes,
     dislikes: props.comment.dislikes,
-  })
+  });
+
+  const [isReported, setReported] = useState(false);
+  const [isReportModalShow, setReportModalShow] = useState(false);
+  const invokeReportModal = () => {
+    setReportModalShow(!isReportModalShow);
+    console.log(isReportModalShow);
+  };
 
   useEffect(() => {
-    socket.on('comment-reacted', (data) => {
-      const { _id, likes, dislikes, reaction, userId } = data
+    socket.on("comment-reacted", (data) => {
+      const { _id, likes, dislikes, reaction, userId } = data;
       if (props.comment._id === _id) {
-        setReactionCount({likes, dislikes})
+        setReactionCount({ likes, dislikes });
         if (uid && userId && uid == userId) {
-          setClientReaction(reaction)
+          setClientReaction(reaction);
         }
       }
-    })
+    });
 
     // return () => {
     //   socket.disconnect()
     // }
-  }, [])
+  }, []);
 
   const handleReactionButton = (reactionCode: number) => {
     switch (clientReaction) {
@@ -47,15 +58,15 @@ function CommentElement(props: IProps) {
         setClientReaction(reactionCode);
         break;
     }
-    reactComment(reactionCode)
+    reactComment(reactionCode);
   };
 
   const reactComment = async (reactionCode: Reaction) => {
-    socket.emit('react-comment', {
+    socket.emit("react-comment", {
       code: reactionCode,
       _id: props.comment._id,
-    })
-  }
+    });
+  };
 
   return (
     <div className="row mt-4 align-items-center justify-content-center commentContainer">
@@ -105,8 +116,23 @@ function CommentElement(props: IProps) {
             ></i>
             <span>{reactionCount.dislikes}</span>
           </button>
+          <button className="reactionButton" id="reportButton">
+            <i
+              className={
+                "bi " + (isReported === true ? "bi-flag-fill" : "bi-flag")
+              }
+              style={isReported ? { color: "#cc3300" } : { color: "black" }}
+              onClick={invokeReportModal}
+            ></i>
+          </button>
         </div>
       </div>
+      <ReportModal
+        reportType={ReportType.Comment}
+        isShow={isReportModalShow}
+        invokeModal={invokeReportModal}
+        setReported={setReported}
+      />
     </div>
   );
 }
