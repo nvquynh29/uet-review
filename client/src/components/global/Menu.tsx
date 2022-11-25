@@ -12,14 +12,18 @@ const Menu = () => {
   const access_token = getAccessToken()
   const { pathname } = useLocation()
   const [name, setName] = useState("");
+  const role = "admin";
 
   const bfLoginLinks = [
     { label: 'Đăng nhập', path: '/login' },
     { label: 'Đăng ký', path: '/register' }
   ]
 
-  const afLoginLinks = [
+  const afLoginLinks = (role !== "admin") ? [
     { label: 'Viết bài Review', path: '/create_review' }
+  ] : 
+  [
+    { label: 'Xem report', path: '/admin/report' }
   ]
 
   const navLinks = access_token ? afLoginLinks : bfLoginLinks
