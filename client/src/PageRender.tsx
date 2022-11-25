@@ -19,8 +19,12 @@ const PageRender = () => {
 
   let name = '';
 
-  if(page){
-    name = slug ? `${page}/[slug]` : `${page}`
+  if (page) {
+    if (page === "admin") {
+      name = `${page}/${slug}`
+    } else {
+      name = slug ? `${page}/[slug]` : `${page}`
+    }
   }
 
   return generatePage(name)
