@@ -1,6 +1,6 @@
 import { ChangeEvent, FormEvent, MouseEventHandler } from "react";
 
-export type InputChange = ChangeEvent<HTMLInputElement>;
+export type InputChange = ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>;
 
 export type FormSubmit = FormEvent<HTMLFormElement>;
 
@@ -58,4 +58,17 @@ export interface ICredential {
   email: string;
   password: string;
   nickname?: string;
+}
+
+export interface IReport {
+  slug: string
+  reason: string
+}
+
+export type Cookie = {
+  accessToken: string
+  refreshToken?: string
+  _id: string
+  role: string
+  nickname: string
 }

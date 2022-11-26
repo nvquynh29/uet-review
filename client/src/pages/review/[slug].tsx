@@ -139,7 +139,6 @@ const DetailReview = () => {
   const [isReportModalShow, setReportModalShow] = useState(false);
   const invokeReportModal = () => {
     setReportModalShow(!isReportModalShow);
-    console.log(isReportModalShow);
   };
 
   const [isReported, setReported] = useState(false);
@@ -151,6 +150,7 @@ const DetailReview = () => {
         isShow={isReportModalShow}
         invokeModal={invokeReportModal}
         setReported={setReported}
+        slug={slug}
       />
 
       <div className="row mt-4 align-items-center postInfo">

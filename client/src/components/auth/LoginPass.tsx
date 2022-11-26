@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { login } from '../../api/auth';
 import Cookies from 'universal-cookie'
-import { FormSubmit, ICredential, InputChange } from "../../utils/TypeScript";
+import { Cookie, FormSubmit, ICredential, InputChange } from "../../utils/TypeScript";
 import { useHistory } from "react-router-dom";
 
 const cookies = new Cookies()
@@ -18,34 +18,28 @@ const LoginPass = () => {
     setUserLogin({ ...userLogin, [name]: value });
   };
 
-  const writeCookies = (accessToken: string, refreshToken: string, _id: string, nickname: string) => {
-    cookies.set('accessToken', accessToken, { 
+  const writeCookies = (cookie: Cookie) => {
+    const maxAge = 24 * 60 * 60 // 1d
+    const options = { path: '/', maxAge }
+    cookies.set('accessToken', cookie.accessToken, )
+    cookies.set('_id', cookie._id, options)
+    cookies.set('nickname', cookie.nickname, options)
+    cookies.set('role', cookie.role, options)
+    if (cookie.refreshToken) {
+      cookies.set('refreshToken', cookie.refreshToken, { 
         path: '/', 
-        maxAge: 24 * 60 * 60, // 1d
-       })
-    cookies.set('_id', _id, { 
-        path: '/', 
-        maxAge: 24 * 60 * 60,
-       })
-    cookies.set('nickname', nickname, { 
-        path: '/', 
-        maxAge: 24 * 60 * 60,
-       })
-    if (refreshToken) {
-      cookies.set('refreshToken', refreshToken, { 
-        path: '/', 
-        maxAge: 30 * 24 * 60 * 60, // 30d
+        maxAge: 30 * maxAge, // 30d
        })
     }
   }
 
   const handleSubmit = async (e: FormSubmit) => {
     e.preventDefault();
-    const { accessToken, refreshToken, _id, nickname } = await login({
+    const cookie: Cookie = await login({
       email: userLogin.account,
       password: userLogin.password,
     } as ICredential)
-    writeCookies(accessToken, refreshToken, _id, nickname)
+    writeCookies(cookie)
     history.push('/')
   };
 

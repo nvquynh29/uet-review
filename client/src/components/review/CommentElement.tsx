@@ -5,6 +5,7 @@ import { getAccessToken, getUID } from "../../utils/cookies";
 import { Reaction, ReportType } from "../../utils/enum";
 import { IComment } from "../../utils/TypeScript";
 import ReportModal from "./ReportModal";
+import toast from 'react-hot-toast';
 interface IProps {
   comment: IComment;
 }
@@ -60,6 +61,10 @@ function CommentElement(props: IProps) {
     }
     reactComment(reactionCode);
   };
+
+  const showToast = () => {
+    toast.success('OKKKKKK')
+  }
 
   const reactComment = async (reactionCode: Reaction) => {
     socket.emit("react-comment", {
@@ -132,6 +137,7 @@ function CommentElement(props: IProps) {
         isShow={isReportModalShow}
         invokeModal={invokeReportModal}
         setReported={setReported}
+        slug={''}
       />
     </div>
   );
