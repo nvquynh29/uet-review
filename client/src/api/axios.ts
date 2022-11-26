@@ -16,8 +16,11 @@ const getHeader = () => {
 
 const instance: AxiosInstance = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
-  headers: getHeader(),
 })
+
+const configAxios = () => {
+  instance.defaults.headers = getHeader()
+}
 
 const refreshToken = () => {
   return instance.get('/refresh-token')
@@ -47,5 +50,7 @@ instance.interceptors.response.use(
     return Promise.reject(err)
   }
 )
+
+export { configAxios }
 
 export default instance

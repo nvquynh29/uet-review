@@ -1,8 +1,9 @@
-import React, { useState } from "react";
-import { login } from '../../api/auth';
-import Cookies from 'universal-cookie'
-import { Cookie, FormSubmit, ICredential, InputChange } from "../../utils/TypeScript";
+import { useState } from "react";
 import { useHistory } from "react-router-dom";
+import Cookies from 'universal-cookie';
+import { login } from '../../api/auth';
+import { configAxios } from '../../api/axios';
+import { Cookie, FormSubmit, ICredential, InputChange } from "../../utils/TypeScript";
 
 const cookies = new Cookies()
 const LoginPass = () => {
@@ -21,7 +22,7 @@ const LoginPass = () => {
   const writeCookies = (cookie: Cookie) => {
     const maxAge = 24 * 60 * 60 // 1d
     const options = { path: '/', maxAge }
-    cookies.set('accessToken', cookie.accessToken, )
+    cookies.set('accessToken', cookie.accessToken, options )
     cookies.set('_id', cookie._id, options)
     cookies.set('nickname', cookie.nickname, options)
     cookies.set('role', cookie.role, options)
@@ -31,6 +32,7 @@ const LoginPass = () => {
         maxAge: 30 * maxAge, // 30d
        })
     }
+    configAxios()
   }
 
   const handleSubmit = async (e: FormSubmit) => {
