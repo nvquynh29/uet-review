@@ -1,9 +1,49 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Pagination from "../../components/global/Pagination";
 import avatar from "../../images/avatar.png";
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
+import { getListReport } from '../../api/report';
+import { truncateString } from '../../utils/string';
+
+type ReportResp = {
+    _id: string
+    reporter: {
+        _id: string
+        nickname: string
+        email: string
+    }
+    post: {
+        _id: string
+        title: string
+        slug: string
+    }
+    reason: string
+    status_id: number
+}
+
+type CustomPagination = {
+    page: number
+    size: number
+    total: number
+    total_page: number
+}
 
 const Report = () => {
+    const [reports, setReports] = useState<ReportResp[]>()
+    const [pagination, setPagination] = useState<CustomPagination>({ page: 1, size: 10, total: 0, total_page: 0 })
+    const { search } = useLocation()
+    const query = new URLSearchParams(search)
+    const page = query.get('page')
+
+    useEffect(() => {
+       fetchReports(page)
+    }, [])
+
+    const fetchReports = async (page: number | string | null, size: number = 10) => {
+       const { data, meta } = await getListReport(page, size)
+       setReports(data as ReportResp[])
+       setPagination(meta as CustomPagination)
+    }
     
     return (
         <>
@@ -18,115 +58,47 @@ const Report = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <th>1</th>
-                        <td>
-                            <div className="d-flex align-items-center">
-                                <img
-                                    src={avatar}
-                                    alt=""
-                                    style={{ width: 45, height: 45 }}
-                                    className="rounded-circle"
-                                />
-                                <div className="ms-3">
-                                    <p className="fw-bold mb-1">Trịnh Mai Huy</p>
-                                    <p className="text-muted mb-0">huy@gmail.com</p>
+                    {reports?.map((report, index) => (
+                        <tr key={report._id}>
+                            <th>{(pagination.page - 1) * pagination.size + index + 1}</th>
+                            <td>
+                                <div className="d-flex align-items-center">
+                                    <img
+                                        src={avatar}
+                                        alt=""
+                                        style={{ width: 45, height: 45 }}
+                                        className="rounded-circle"
+                                    />
+                                    <div className="ms-3">
+                                        <p className="fw-bold mb-1">{report.reporter.nickname}</p>
+                                        <p className="text-muted mb-0">{report.reporter.email}</p>
+                                    </div>
                                 </div>
-                            </div>
-                        </td>
-                        <td>
-                            <p className="fw-normal mb-1"><Link
-                                to={`/review`}
-                                style={{ fontSize: "1rem", fontWeight: "500" }}
-                            >
-                                Review 1
-                            </Link></p>
-                        </td>
-                        <td>Lý do 1</td>
-                        <td>
-                            <button
-                                type="button"
-                                className="btn btn-link btn-rounded btn-sm fw-bold"
-                                data-mdb-ripple-color="dark"
-                            >
-                                Xem thêm
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>2</th>
-                        <td>
-                            <div className="d-flex align-items-center">
-                                <img
-                                    src={avatar}
-                                    className="rounded-circle"
-                                    alt=""
-                                    style={{ width: 45, height: 45 }}
-                                />
-                                <div className="ms-3">
-                                    <p className="fw-bold mb-1">Nguyễn Văn Quỳnh</p>
-                                    <p className="text-muted mb-0">quynh@gmail.com</p>
-                                </div>
-                            </div>
-                        </td>
-                        <td>
-                            <p className="fw-normal mb-1"><Link
-                                to={`/review`}
-                                style={{ fontSize: "1rem", fontWeight: "500" }}
-                            >
-                                Review 2
-                            </Link></p>
-                        </td>
-                        <td>Lý do 2</td>
-                        <td>
-                            <button
-                                type="button"
-                                className="btn btn-link btn-rounded btn-sm fw-bold"
-                                data-mdb-ripple-color="dark"
-                            >
-                                Xem thêm
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>3</th>
-                        <td>
-                            <div className="d-flex align-items-center">
-                                <img
-                                    src={avatar}
-                                    className="rounded-circle"
-                                    alt=""
-                                    style={{ width: 45, height: 45 }}
-                                />
-                                <div className="ms-3">
-                                    <p className="fw-bold mb-1">Đỗ Tiến Đạt</p>
-                                    <p className="text-muted mb-0">dat@gmail.com</p>
-                                </div>
-                            </div>
-                        </td>
-                        <td>
-                            <p className="fw-normal mb-1"><Link
-                                to={`/review`}
-                                style={{ fontSize: "1rem", fontWeight: "500" }}
-                            >
-                                Review 3
-                            </Link></p>
-                        </td>
-                        <td>Lý do 3</td>
-                        <td>
-                            <button
-                                type="button"
-                                className="btn btn-link btn-rounded btn-sm fw-bold"
-                                data-mdb-ripple-color="dark"
-                            >
-                                Xem thêm
-                            </button>
-                        </td>
-                    </tr>
+                            </td>
+                            <td>
+                                <p className="fw-normal mb-1"><Link
+                                    to={`/review/${report.post.slug}`}
+                                    style={{ fontSize: "1rem", fontWeight: "500" }}
+                                >
+                                    {truncateString(report.post.title, 50)}
+                                </Link></p>
+                            </td>
+                            <td>{truncateString(report.reason, 50)}</td>
+                            <td>
+                                <button
+                                    type="button"
+                                    className="btn btn-link btn-rounded btn-sm fw-bold"
+                                    data-mdb-ripple-color="dark"
+                                >
+                                    Xem thêm
+                                </button>
+                            </td>
+                        </tr>
+                    ))}
                 </tbody>
             </table>
 
-            <Pagination total={2} />
+            <Pagination total={pagination.total_page} />
         </>
     )
 }

@@ -55,12 +55,12 @@ const Menu = () => {
 
   const handleLogout = async () => {
     try {
-      await logout()
       clearCookies('_id')
       clearCookies('accessToken')
       clearCookies('refreshToken')
       clearCookies('nickname')
       clearCookies('role')
+      await logout()
       history.push('/')
     } catch (error) {
       console.log(error)
