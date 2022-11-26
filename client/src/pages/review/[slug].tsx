@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import toast, { Toaster } from 'react-hot-toast';
 import { useParams } from "react-router-dom";
 
 import { io, Socket } from "socket.io-client";
@@ -7,7 +8,7 @@ import CommentElement from "../../components/review/CommentElement";
 import CommentForm from "../../components/review/CommentForm";
 import ReportModal from "../../components/review/ReportModal";
 import avatar from "../../images/avatar.png";
-import { getAccessToken, getUID } from "../../utils/cookies";
+import { getAccessToken, getUID, isLoggedIn } from "../../utils/cookies";
 import { Reaction, ReportType } from "../../utils/enum";
 import { IComment, IParams } from "../../utils/TypeScript";
 import { lecturers, subjects } from "../create_review";
@@ -54,6 +55,7 @@ const socket: Socket = io(process.env.REACT_APP_SOCKET_URL as string, {
 
 const DetailReview = () => {
   const uid = getUID();
+  const loggedIn = isLoggedIn()
   const slug = useParams<IParams>().slug;
   const [postData, setPostData] = useState<PostData>();
   // TODO: Refactor using T & { type: ReactionType }
@@ -109,6 +111,11 @@ const DetailReview = () => {
   // *handleReaction
   const [clientReaction, setClientReaction] = useState(Reaction.Null);
   const handleReactionButton = (reactionCode: Reaction) => {
+    if (!loggedIn) {
+      toast.remove();
+      toast.error('Vui lòng đăng nhập để sử dụng chức năng này')
+      return
+    }
     switch (clientReaction) {
       case reactionCode:
         setClientReaction(Reaction.Null);
@@ -138,6 +145,11 @@ const DetailReview = () => {
 
   const [isReportModalShow, setReportModalShow] = useState(false);
   const invokeReportModal = () => {
+    if (!loggedIn) {
+      toast.remove();
+      toast.error('Vui lòng đăng nhập để sử dụng chức năng này')
+      return
+    }
     setReportModalShow(!isReportModalShow);
   };
 
@@ -145,6 +157,7 @@ const DetailReview = () => {
 
   return (
     <div className="my-4 detail_review">
+      <Toaster />
       <ReportModal
         reportType={ReportType.Review}
         isShow={isReportModalShow}

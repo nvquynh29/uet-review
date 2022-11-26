@@ -15,8 +15,13 @@ const getUID = () => {
   return getCookie('_id')
 }
 
+const isLoggedIn = () => {
+  const id = getUID()
+  return !!id
+}
+
 const clearCookies = (key: string) => {
   cookies.remove(key)
 }
 
-export { getCookie, getAccessToken, clearCookies, getUID }
+export { getCookie, getAccessToken, clearCookies, getUID, isLoggedIn }

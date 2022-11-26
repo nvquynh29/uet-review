@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import avatar from "../../images/avatar.png";
-import { getAccessToken, getUID } from "../../utils/cookies";
+import { getAccessToken, getUID, isLoggedIn } from "../../utils/cookies";
 import { Reaction, ReportType } from "../../utils/enum";
 import { IComment } from "../../utils/TypeScript";
 import ReportModal from "./ReportModal";
@@ -18,6 +18,7 @@ const socket: Socket = io(process.env.REACT_APP_SOCKET_URL as string, {
 
 function CommentElement(props: IProps) {
   const uid = getUID(); // user id
+  const loggedIn = isLoggedIn()
   const [clientReaction, setClientReaction] = useState(props.comment.type);
   const [reactionCount, setReactionCount] = useState<{
     likes: number;
@@ -30,6 +31,11 @@ function CommentElement(props: IProps) {
   const [isReported, setReported] = useState(false);
   const [isReportModalShow, setReportModalShow] = useState(false);
   const invokeReportModal = () => {
+    if (!loggedIn) {
+      toast.remove();
+      toast.error('Vui lòng đăng nhập để sử dụng chức năng này')
+      return
+    }
     setReportModalShow(!isReportModalShow);
     console.log(isReportModalShow);
   };
@@ -51,6 +57,11 @@ function CommentElement(props: IProps) {
   }, []);
 
   const handleReactionButton = (reactionCode: number) => {
+    if (!loggedIn) {
+      toast.remove();
+      toast.error('Vui lòng đăng nhập để sử dụng chức năng này')
+      return
+    }
     switch (clientReaction) {
       case reactionCode:
         setClientReaction(Reaction.Null);
