@@ -1,28 +1,18 @@
 import mongoose, { Schema, Types } from 'mongoose'
+import { ReportStatus } from '../types'
 
-interface IReport {
-  user_id: object
-  reporter_id: object
-  post_id: object
-  title: string
+export interface IReport {
+  reporter: object
+  post?: object
+  slug?: string
   reason: string
-  status_id: ReportStatus
-  created_at: Date
-  updated_at: Date
-}
-
-enum ReportStatus {
-  PENDING = 0,
-  APPROVED = 1,
-  REJECTED = 2,
+  status_id?: ReportStatus
 }
 
 const reportSchema = new Schema<IReport>(
   {
-    user_id: { type: Types.ObjectId, required: true, ref: 'User' },
-    reporter_id: { type: Types.ObjectId, required: true, ref: 'User' },
-    post_id: { type: Types.ObjectId, required: true, ref: 'Post' },
-    title: { type: String, required: true },
+    reporter: { type: Types.ObjectId, required: true, ref: 'User' },
+    post: { type: Types.ObjectId, required: false, ref: 'Post' },
     reason: { type: String, required: true },
     status_id: { type: Number, required: true },
   },

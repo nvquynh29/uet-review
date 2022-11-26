@@ -12,7 +12,7 @@ const Menu = () => {
   const access_token = getAccessToken()
   const { pathname } = useLocation()
   const [name, setName] = useState("");
-  const role = "admin";
+  const [role, setRole] = useState("user")
 
   const bfLoginLinks = [
     { label: 'Đăng nhập', path: '/login' },
@@ -34,8 +34,10 @@ const Menu = () => {
 
   useEffect(() => {
     const nickname = getCookie('nickname')
+    const role = getCookie('role')
     if (nickname) {
       setName(nickname)
+      setRole(role)
     }
     // fetchProfile();
   }, [name, access_token]);
@@ -53,11 +55,12 @@ const Menu = () => {
 
   const handleLogout = async () => {
     try {
-      await logout()
       clearCookies('_id')
       clearCookies('accessToken')
       clearCookies('refreshToken')
       clearCookies('nickname')
+      clearCookies('role')
+      await logout()
       history.push('/')
     } catch (error) {
       console.log(error)

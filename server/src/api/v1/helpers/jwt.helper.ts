@@ -30,7 +30,7 @@ const extractTokenInfo = (token: string, options?: jwt.VerifyOptions) => {
     return data as UserInfo
   } catch (error) {
     console.log(error)
-    throw error
+    // throw error
   }
 }
 

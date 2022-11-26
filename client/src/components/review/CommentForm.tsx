@@ -3,6 +3,8 @@ import avatar from "../../images/avatar.png";
 import { FormSubmit, IComment, InputChange } from "../../utils/TypeScript";
 import { createComment } from "../../api/comment";
 import { io, Socket } from 'socket.io-client';
+import { isLoggedIn } from '../../utils/cookies';
+import toast from 'react-hot-toast';
 
 interface IProps {
   slug?: string;
@@ -14,6 +16,7 @@ const socket: Socket = io(process.env.REACT_APP_SOCKET_URL as string)
 
 function CommentForm(props: IProps) {
   const [content, setContent] = useState("");
+  const loggedIn = isLoggedIn()
 
   useEffect(() => {
     socket.on('new-post-comment', (data) => {
@@ -27,6 +30,11 @@ function CommentForm(props: IProps) {
 
   const handleSubmit = async (e: FormSubmit) => {
     e.preventDefault();
+    if (!loggedIn) {
+      toast.remove();
+      toast.error('Vui lòng đăng nhập để sử dụng chức năng này')
+      return
+    }
     try {
       const comment: IComment = {
         post_id: props.id,

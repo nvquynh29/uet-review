@@ -42,6 +42,12 @@ export enum Role {
   ADMIN = 'admin',
 }
 
+export enum ReportStatus {
+  PENDING = 0,
+  APPROVED = 1,
+  REJECTED = 2,
+}
+
 // TODO: Remove dummy data
 const userId = '6367d1362d289b4017d4f82a'
 export { userId }

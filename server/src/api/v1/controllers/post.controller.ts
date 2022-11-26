@@ -1,4 +1,4 @@
-import { NextFunction, Request, response, Response } from 'express'
+import { NextFunction, Request, Response } from 'express'
 import { Types } from 'mongoose'
 import Post, { IPost, IReview } from '../models/post.model'
 import { generateSlug } from '../../../pkg/slugify'
