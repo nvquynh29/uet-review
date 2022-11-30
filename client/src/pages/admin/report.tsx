@@ -37,7 +37,7 @@ const Report = () => {
 
     useEffect(() => {
        fetchReports(page)
-    }, [])
+    }, [page])
 
     const fetchReports = async (page: number | string | null, size: number = 10) => {
        const { data, meta } = await getListReport(page, size)
