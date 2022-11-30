@@ -112,7 +112,18 @@ const getListPost = async (req: Request, res: Response, next: NextFunction) => {
   const offset = (pagination.page - 1) * pagination.size
 
   try {
-    const posts = await Post.find().sort({ likes: 'desc' }).skip(offset).limit(pagination.size)
+    const posts = await Post.find()
+      .populate({
+        path: 'author_id',
+        select: {
+          _id: 1,
+          nickname: 1,
+          email: 1,
+        },
+      })
+      .sort({ likes: 'desc' })
+      .skip(offset)
+      .limit(pagination.size)
     const total = await Post.find().countDocuments()
     const totalPage = Math.ceil(total / pagination.size)
     pagination.total = total
@@ -120,12 +131,15 @@ const getListPost = async (req: Request, res: Response, next: NextFunction) => {
 
     const data: any = []
     // TODO: Use real data
-    const author = {
+    let author = <Author>{
       _id: userId,
       nickname: 'Trịnh Mai Huy',
       email: 'trinh.mai.huy@gmail.com',
     }
     posts.forEach((post) => {
+      if (post.author_id != null) {
+        author = post.author_id as Author
+      }
       data.push({
         post,
         author,
