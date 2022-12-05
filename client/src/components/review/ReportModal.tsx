@@ -26,7 +26,6 @@ function ReportModal(prop: IProps) {
   const [detail, setDetail] = useState("")
   const handleSubmit = async (e: FormSubmit) => {
     e.preventDefault();
-    prop.invokeModal();
     try {
       await report({
         slug: prop.slug,
@@ -37,9 +36,13 @@ function ReportModal(prop: IProps) {
       setReason('')
       setDetail('')
       toast.success('Báo cáo bài viết thành công');
-    } catch (error) {
+      prop.invokeModal();
+    } catch (error: any) {
+      if (error.response.status === 400) {
+        toast.error(error.response.data.message)
+        return
+      }
       toast.error('Có lỗi xảy ra, vui lòng thử lại sau');
-      console.log(error)
     }
   };
 

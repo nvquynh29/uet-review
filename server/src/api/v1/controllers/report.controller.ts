@@ -8,7 +8,7 @@ const reportPost = async (req: Request, res: Response) => {
 
   // TODO: Using validator before this layer
   if (detail && (detail as string).length > 500) {
-    return res.json({ error: { message: 'Nội dung quá dài, số ký tự tối đa là 500' } })
+    return res.status(400).json({ message: 'Nội dung quá dài, số ký tự tối đa là 500' })
   }
   const { _id } = res.locals.user
 
