@@ -7,6 +7,7 @@ export interface IReport {
   slug?: string
   reason?: string
   status_id?: ReportStatus
+  detail?: string,
 }
 
 const reportSchema = new Schema<IReport>(
@@ -14,6 +15,7 @@ const reportSchema = new Schema<IReport>(
     reporter: { type: Types.ObjectId, required: true, ref: 'User' },
     post: { type: Types.ObjectId, required: false, ref: 'Post' },
     reason: { type: String },
+    detail: { type: String },
     status_id: { type: Number, required: true },
   },
   {

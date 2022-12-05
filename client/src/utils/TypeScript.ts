@@ -4,6 +4,8 @@ export type InputChange = ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAr
 
 export type FormSubmit = FormEvent<HTMLFormElement>;
 
+export type SelectChange = ChangeEvent<HTMLSelectElement>
+
 export type ButtonClick = MouseEventHandler<HTMLButtonElement>;
 
 export interface IParams {
@@ -63,6 +65,7 @@ export interface ICredential {
 export interface IReport {
   slug: string
   reason: string
+  detail?: string
 }
 
 export type Cookie = {

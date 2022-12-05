@@ -4,7 +4,12 @@ import Report, { IReport } from '../models/report.model'
 import { IPagination, ReportStatus } from '../types'
 
 const reportPost = async (req: Request, res: Response) => {
-  let { post_id, slug, reason } = req.body
+  let { post_id, slug, reason, detail } = req.body
+
+  // TODO: Using validator before this layer
+  if (detail && (detail as string).length > 500) {
+    return res.status(400).json({ message: 'Nội dung quá dài, số ký tự tối đa là 500' })
+  }
   const { _id } = res.locals.user
 
   if (slug) {
@@ -21,6 +26,7 @@ const reportPost = async (req: Request, res: Response) => {
     post: post_id,
     slug,
     reason,
+    detail,
   }
   report.status_id = ReportStatus.PENDING
 
