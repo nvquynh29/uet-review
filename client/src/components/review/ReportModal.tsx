@@ -3,7 +3,7 @@ import { Modal } from "react-bootstrap";
 import toast, { Toaster } from 'react-hot-toast';
 import { report } from '../../api/report';
 import { ReportType } from "../../utils/enum";
-import { FormSubmit, InputChange, IReport } from "../../utils/TypeScript";
+import { FormSubmit, InputChange, IReport, SelectChange } from "../../utils/TypeScript";
 
 interface IProps {
   isShow: boolean;
@@ -13,8 +13,17 @@ interface IProps {
   slug: string;
 }
 
+const options = [
+  {value: 'Nội dung sai sự thật', text: 'Nội dung sai sự thật'},
+  {value: 'Nội dung bị lỗi thời', text: 'Nội dung bị lỗi thời'},
+  {value: 'Nội dung spam', text: 'Nội dung spam'},
+  {value: 'Nội dung có ngôn ngữ thô tục', text: 'Nội dung có ngôn ngữ thô tục'},
+  {value: 'Khác', text: 'Khác'},
+]
+
 function ReportModal(prop: IProps) {
   const [reason, setReason] = useState("")
+  const [detail, setDetail] = useState("")
   const handleSubmit = async (e: FormSubmit) => {
     e.preventDefault();
     prop.invokeModal();
@@ -22,9 +31,11 @@ function ReportModal(prop: IProps) {
       await report({
         slug: prop.slug,
         reason,
+        detail,
       } as IReport);
       prop.setReported(true);
       setReason('')
+      setDetail('')
       toast.success('Báo cáo bài viết thành công');
     } catch (error) {
       toast.error('Có lỗi xảy ra, vui lòng thử lại sau');
@@ -37,6 +48,10 @@ function ReportModal(prop: IProps) {
   };
 
   const handleChangeInput = (e: InputChange) => {
+    setDetail(e.target.value)
+  }
+
+  const handleChangeSelect = (e: SelectChange) => {
     setReason(e.target.value)
   }
 
@@ -59,12 +74,17 @@ function ReportModal(prop: IProps) {
               <select
                 className="form-control text-capitalize"
                 id="reportSelector"
+                value={reason}
+                onChange={handleChangeSelect}
               >
-                <option>Nội dung sai sự thật</option>
+                {options.map(option => (
+                  <option value={option.value}>{option.text}</option>
+                ))}
+                {/* <option>Nội dung sai sự thật</option>
                 <option>Nội dung bị lỗi thời</option>
                 <option>Nội dung spam</option>
                 <option>Nội dung có ngôn ngữ thô tục</option>
-                <option>Khác</option>
+                <option>Khác</option> */}
               </select>
             </div>
             <div className="mt-4">
@@ -75,7 +95,7 @@ function ReportModal(prop: IProps) {
                 className="form-control"
                 rows={3}
                 placeholder="Nhập nội dung..."
-                value={reason}
+                value={detail}
                 onChange={handleChangeInput}
               ></textarea>
             </div>

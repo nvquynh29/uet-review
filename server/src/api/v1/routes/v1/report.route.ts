@@ -1,4 +1,4 @@
-import express, { Router } from 'express'
+import express, { Router, Request, Response, NextFunction } from 'express'
 import * as ReportController from '../../controllers/report.controller'
 import isAdmin from '../../middlewares/admin.middleware'
 import isAuth from '../../middlewares/auth.middleware'
