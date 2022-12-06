@@ -10,42 +10,8 @@ import ReportModal from "../../components/review/ReportModal";
 import avatar from "../../images/avatar.png";
 import { getAccessToken, getUID, isLoggedIn } from "../../utils/cookies";
 import { Reaction, ReportType } from "../../utils/enum";
-import { IComment, IParams } from "../../utils/TypeScript";
+import { IComment, IParams, PostData } from "../../utils/TypeScript";
 import { lecturers, subjects } from "../create_review";
-
-export interface Author {
-  nickname: string;
-  email: string;
-}
-
-export interface Post {
-  _id: string;
-  author_id: string;
-  lecturer_id?: string;
-  subject_id?: string;
-  title: string;
-  slug: string;
-  content: string;
-  likes: number;
-  dislikes: number;
-  reviews: Review[];
-  tags: any[];
-  created_at: string;
-  updated_at: string;
-}
-
-export interface Review {
-  name: string;
-  content: string;
-  _id: string;
-}
-
-export type PostData = {
-  post: Post;
-  author: Author;
-  comments: IComment[];
-  reaction: number; // reaction type
-};
 
 const socket: Socket = io(process.env.REACT_APP_SOCKET_URL as string, {
   auth: {

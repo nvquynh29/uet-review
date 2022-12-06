@@ -1,5 +1,5 @@
 import mongoose, { Schema, Types } from 'mongoose'
-import { ReportType } from '../types'
+import { PostType } from '../types'
 
 export interface IReview {
   _id: Types.ObjectId
@@ -14,7 +14,7 @@ export interface IPost {
   title: string
   slug?: string
   content: string
-  type?: ReportType
+  type?: PostType
   reviews: Types.DocumentArray<IReview>
   tags?: Array<string>
   likes?: number

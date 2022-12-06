@@ -48,7 +48,7 @@ export enum ReportStatus {
   REJECTED = 2,
 }
 
-export enum ReportType {
+export enum PostType {
   NONE = -1,
   SUBJECT = 0,
   LECTURER = 1,
