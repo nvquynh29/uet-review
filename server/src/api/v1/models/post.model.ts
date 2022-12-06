@@ -1,4 +1,5 @@
 import mongoose, { Schema, Types } from 'mongoose'
+import { ReportType } from '../types'
 
 export interface IReview {
   _id: Types.ObjectId
@@ -13,6 +14,7 @@ export interface IPost {
   title: string
   slug?: string
   content: string
+  type?: ReportType
   reviews: Types.DocumentArray<IReview>
   tags?: Array<string>
   likes?: number
@@ -28,6 +30,7 @@ const postSchema = new Schema<IPost>(
     lecturer_id: { type: Types.ObjectId, ref: 'User' },
     title: { type: String, required: true },
     slug: { type: String, required: true },
+    type: { type: Number, required: true },
     content: { type: String, required: true },
     reviews: [{ name: String, content: String }],
     tags: [String],

@@ -48,6 +48,12 @@ export enum ReportStatus {
   REJECTED = 2,
 }
 
+export enum ReportType {
+  NONE = -1,
+  SUBJECT = 0,
+  LECTURER = 1,
+}
+
 // TODO: Remove dummy data
 const userId = '6367d1362d289b4017d4f82a'
 export { userId }
