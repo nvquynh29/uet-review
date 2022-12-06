@@ -3,6 +3,7 @@ import { Link, useHistory } from "react-router-dom";
 import { io, Socket } from "socket.io-client";
 import { getListPost } from "../api/post";
 import Pagination from "../components/global/Pagination";
+import Search from "../components/global/Search";
 import avatar from "../images/avatar.png";
 import { getAccessToken } from "../utils/cookies";
 import { Author, Post } from "./review/[slug]";
@@ -46,6 +47,8 @@ const Home = () => {
 
   return (
     <>
+      <Search />
+
       <div className="list-post mt-4 px-4">
         {posts?.map((item) => (
           <div

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import toast, { Toaster } from 'react-hot-toast';
+import toast, { Toaster } from "react-hot-toast";
 import { useParams } from "react-router-dom";
 
 import { io, Socket } from "socket.io-client";
@@ -55,7 +55,7 @@ const socket: Socket = io(process.env.REACT_APP_SOCKET_URL as string, {
 
 const DetailReview = () => {
   const uid = getUID();
-  const loggedIn = isLoggedIn()
+  const loggedIn = isLoggedIn();
   const slug = useParams<IParams>().slug;
   const [postData, setPostData] = useState<PostData>();
   // TODO: Refactor using T & { type: ReactionType }
@@ -113,8 +113,8 @@ const DetailReview = () => {
   const handleReactionButton = (reactionCode: Reaction) => {
     if (!loggedIn) {
       toast.remove();
-      toast.error('Vui lòng đăng nhập để sử dụng chức năng này')
-      return
+      toast.error("Vui lòng đăng nhập để sử dụng chức năng này");
+      return;
     }
     switch (clientReaction) {
       case reactionCode:
@@ -147,8 +147,8 @@ const DetailReview = () => {
   const invokeReportModal = () => {
     if (!loggedIn) {
       toast.remove();
-      toast.error('Vui lòng đăng nhập để sử dụng chức năng này')
-      return
+      toast.error("Vui lòng đăng nhập để sử dụng chức năng này");
+      return;
     }
     setReportModalShow(!isReportModalShow);
   };
