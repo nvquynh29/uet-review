@@ -6,7 +6,8 @@ import Pagination from "../components/global/Pagination";
 import Search from "../components/global/Search";
 import avatar from "../images/avatar.png";
 import { getAccessToken } from "../utils/cookies";
-import { Author, Post } from "./review/[slug]";
+import { IReview } from '../utils/TypeScript';
+import { PostResp } from "../utils/TypeScript";
 
 const socket: Socket = io(process.env.REACT_APP_SOCKET_URL as string, {
   auth: {
@@ -15,7 +16,7 @@ const socket: Socket = io(process.env.REACT_APP_SOCKET_URL as string, {
 });
 
 const Home = () => {
-  const [posts, setPosts] = useState<[{ post: Post; author: Author }]>();
+  const [posts, setPosts] = useState<PostResp[]>();
   const [total, setTotal] = useState(0);
 
   const history = useHistory();
@@ -44,10 +45,15 @@ const Home = () => {
       console.log(error);
     }
   }, []);
+  
+  const updatePosts = (posts: PostResp[], total: number) => {
+    setPosts(posts)
+    setTotal(total)
+  }
 
   return (
     <>
-      <Search />
+      <Search updatePosts={updatePosts} />
 
       <div className="list-post mt-4 px-4">
         {posts?.map((item) => (

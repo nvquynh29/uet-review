@@ -62,6 +62,40 @@ export interface ICredential {
   nickname?: string;
 }
 
+export interface Author {
+  nickname: string
+  email: string
+}
+
+export interface Post {
+  _id: string
+  author_id: string
+  lecturer_id?: string
+  subject_id?: string
+  title: string
+  slug: string
+  content: string
+  likes: number
+  dislikes: number
+  reviews: Review[]
+  tags: any[]
+  created_at: string
+  updated_at: string
+}
+
+export interface Review {
+  name: string
+  content: string
+  _id: string
+}
+
+export type PostData = {
+  post: Post
+  author: Author
+  comments: IComment[]
+  reaction: number // reaction type
+}
+
 export interface IReport {
   slug: string
   reason: string
@@ -74,4 +108,9 @@ export type Cookie = {
   _id: string
   role: string
   nickname: string
+}
+
+export type PostResp = { 
+  post: Post
+  author: Author 
 }

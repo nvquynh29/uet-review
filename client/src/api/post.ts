@@ -16,4 +16,24 @@ const getListPost = async (search: string) => {
   return data
 }
 
-export { createPost, getPostBySlug, getListPost }
+
+const fetchPosts = async (page?: string, size?: string, search?: string, type?: string) => {
+  const query = new URLSearchParams()
+  if (page && page.trim().length > 0) {
+    query.append('page', page)
+  }
+  if (size && size.trim().length > 0) {
+    query.append('size', size)
+  }
+  if (search && search.trim().length > 0) {
+    query.append('search', search)
+  }
+  if (type && type.trim().length > 0) {
+    query.append('type', type)
+  }
+  console.log(`/posts?${query.toString()}`)
+  const { data } = await instance.get(`/posts?${query.toString()}`)
+  return data
+}
+
+export { createPost, getPostBySlug, getListPost, fetchPosts }

@@ -8,3 +8,9 @@ export enum ReportType {
   Review,
   Comment,
 }
+
+export enum PostType {
+  NONE = -1,
+  SUBJECT = 0,
+  LECTURER = 1,
+}

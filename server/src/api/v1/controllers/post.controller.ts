@@ -9,7 +9,7 @@ import {
   MongooseID,
   Reaction,
   ReactionTypes,
-  ReportType,
+  PostType,
   userId,
   UserInfo,
 } from '../types'
@@ -31,7 +31,7 @@ const createPost = async (req: Request, res: Response) => {
     reviews: new Types.DocumentArray<IReview>([]),
     tags: [],
   }
-  post.type = subjectId ? ReportType.SUBJECT : ReportType.LECTURER
+  post.type = subjectId ? PostType.SUBJECT : PostType.LECTURER
 
   body.reviews.forEach(function (review: IReview) {
     post.reviews.push(review)
@@ -118,13 +118,12 @@ const getListPost = async (req: Request, res: Response, next: NextFunction) => {
     if (search && (search as string).length > 0) {
       keyword = slugify(search as string)
     }
-    let reportType = ReportType.NONE
+    let reportType = PostType.NONE
     if (type && (type as string).length > 0) {
       reportType = parseInt(type as string)
     }
 
     const filter = generateFilter(keyword, reportType)
-    console.log(filter)
     const posts = await Post.find(filter)
       .populate({
         path: 'author_id',
@@ -137,7 +136,7 @@ const getListPost = async (req: Request, res: Response, next: NextFunction) => {
       .sort({ likes: 'desc' })
       .skip(offset)
       .limit(pagination.size)
-    const total = await Post.find().countDocuments()
+    const total = await Post.find(filter).countDocuments()
     const totalPage = Math.ceil(total / pagination.size)
     pagination.total = total
     pagination.total_page = totalPage
@@ -194,13 +193,12 @@ const commentPost = async (req: Request, res: Response) => {
   }
 }
 
-const generateFilter = (keyword: string, type: ReportType): FilterQuery<IPost> => {
-  console.log(type)
+const generateFilter = (keyword: string, type: PostType): FilterQuery<IPost> => {
   let filter: FilterQuery<IPost> = {}
   if (keyword.length > 0) {
     filter = { ...filter, ...{ slug: { $regex: keyword, $options: 'i' } } }
   }
-  if (type > ReportType.NONE) {
+  if (type > PostType.NONE) {
     filter = { ...filter, type }
   }
   return filter
