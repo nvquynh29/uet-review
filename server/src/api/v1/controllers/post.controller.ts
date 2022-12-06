@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
-import { Types } from 'mongoose'
+import { FilterQuery, Types } from 'mongoose'
 import Post, { IPost, IReview } from '../models/post.model'
-import { generateSlug } from '../../../pkg/slugify'
+import { slugify, generateSlug } from '../../../pkg/slugify'
 import {
   Author,
   ICommentResp,
@@ -9,6 +9,7 @@ import {
   MongooseID,
   Reaction,
   ReactionTypes,
+  ReportType,
   userId,
   UserInfo,
 } from '../types'
@@ -30,6 +31,7 @@ const createPost = async (req: Request, res: Response) => {
     reviews: new Types.DocumentArray<IReview>([]),
     tags: [],
   }
+  post.type = subjectId ? ReportType.SUBJECT : ReportType.LECTURER
 
   body.reviews.forEach(function (review: IReview) {
     post.reviews.push(review)
@@ -104,7 +106,7 @@ const getPost = async (req: Request, res: Response) => {
 }
 
 const getListPost = async (req: Request, res: Response, next: NextFunction) => {
-  const { page, size } = req.query
+  const { page, size, search, type } = req.query
   const pagination: IPagination = {
     page: parseInt(page as string) || 1,
     size: parseInt(size as string) || 10,
@@ -112,7 +114,18 @@ const getListPost = async (req: Request, res: Response, next: NextFunction) => {
   const offset = (pagination.page - 1) * pagination.size
 
   try {
-    const posts = await Post.find()
+    let keyword = ''
+    if (search && (search as string).length > 0) {
+      keyword = slugify(search as string)
+    }
+    let reportType = ReportType.NONE
+    if (type && (type as string).length > 0) {
+      reportType = parseInt(type as string)
+    }
+
+    const filter = generateFilter(keyword, reportType)
+    console.log(filter)
+    const posts = await Post.find(filter)
       .populate({
         path: 'author_id',
         select: {
@@ -179,6 +192,18 @@ const commentPost = async (req: Request, res: Response) => {
   } catch (error) {
     res.status(500).json(error)
   }
+}
+
+const generateFilter = (keyword: string, type: ReportType): FilterQuery<IPost> => {
+  console.log(type)
+  let filter: FilterQuery<IPost> = {}
+  if (keyword.length > 0) {
+    filter = { ...filter, ...{ slug: { $regex: keyword, $options: 'i' } } }
+  }
+  if (type > ReportType.NONE) {
+    filter = { ...filter, type }
+  }
+  return filter
 }
 
 export { createPost, getPost, getListPost, commentPost }
