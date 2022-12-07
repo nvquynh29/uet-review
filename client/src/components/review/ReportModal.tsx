@@ -22,7 +22,7 @@ const options = [
 ]
 
 function ReportModal(prop: IProps) {
-  const [reason, setReason] = useState("")
+  const [reason, setReason] = useState(options[0].value)
   const [detail, setDetail] = useState("")
   const handleSubmit = async (e: FormSubmit) => {
     e.preventDefault();
